@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="CpixRequester.cpp" />
+    <ClCompile Include="CpixClient.cpp" />
+    <ClCompile Include="curlHttpException.cpp" />
+    <ClCompile Include="curlHttpRequester.cpp" />
+    <ClCompile Include="libCurlHttp.cpp" />
+    <ClCompile Include="util.cpp" />
+    <ClCompile Include="Helper\base64.cpp">
+      <Filter>helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\jsoncpp.cpp">
+      <Filter>helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\xmlParser.cpp">
+      <Filter>helper</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CpixRequester.h" />
+    <ClInclude Include="CpixClient.h" />
+    <ClInclude Include="curlHttpException.h" />
+    <ClInclude Include="curlHttpRequester.h" />
+    <ClInclude Include="libCurlHttp.h" />
+    <ClInclude Include="util.h" />
+    <ClInclude Include="Helper\base64.h">
+      <Filter>helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\xmlParser.h">
+      <Filter>helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\json\json-forwards.h">
+      <Filter>helper\json</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper\json\json.h">
+      <Filter>helper\json</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="helper">
+      <UniqueIdentifier>{516ae6d8-dd09-4bf8-bdf3-0fd07819ce4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="helper\json">
+      <UniqueIdentifier>{fb586652-12b8-48f3-b919-75ab595a5fe9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
