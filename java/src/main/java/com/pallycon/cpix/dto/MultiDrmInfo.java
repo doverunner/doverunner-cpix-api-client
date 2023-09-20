@@ -5,6 +5,7 @@ public class MultiDrmInfo {
 	private String key;
 	private String keyId;
 	private String iv;
+	private String periodIndex;
 	private String widevinePssh;
 	private String widevinePsshPayload;
 	private String playreadyPssh;
@@ -44,6 +45,14 @@ public class MultiDrmInfo {
 
 	public void setIv(String iv) {
 		this.iv = iv;
+	}
+
+	public String getPeriodIndex() {
+		return periodIndex;
+	}
+
+	public void setPeriodIndex(String periodIndex) {
+		this.periodIndex = periodIndex;
 	}
 
 	public String getWidevinePssh() {

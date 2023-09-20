@@ -1,4 +1,4 @@
-package com.pallycon.cpix.util;
+package com.pallycon.cpix.utility;
 
 import java.util.Base64;
 

@@ -6,7 +6,7 @@ import com.pallycon.cpix.dto.EncryptionScheme;
 import com.pallycon.cpix.dto.MultiDrmInfo;
 import com.pallycon.cpix.dto.TrackType;
 import com.pallycon.cpix.exception.CpixClientException;
-import com.pallycon.cpix.util.StringUtil;
+import com.pallycon.cpix.utility.StringUtil;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -31,6 +31,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.json.simple.parser.JSONParser;
 
 public class PallyConCpixClient implements CpixClient{
 	private static final String WIDEVINE_SYSTEM_ID = "EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED";
@@ -49,15 +50,21 @@ public class PallyConCpixClient implements CpixClient{
 	@Override
 	public ContentPackagingInfo GetContentKeyInfoFromPallyConKMS(String contentId,
 		EnumSet<DrmType> drmTypes, EncryptionScheme encryptionScheme,
-		EnumSet<TrackType> trackTypes) throws CpixClientException{
+		EnumSet<TrackType> trackTypes, long periodIndex) throws CpixClientException{
 
 		Map<TrackType, String> keyMap = buildKeyMap(trackTypes);
 
-		String requestXml = buildRequestXml(contentId, keyMap, drmTypes, encryptionScheme);
+		String requestXml = buildRequestXml(contentId, keyMap, drmTypes, encryptionScheme,
+			periodIndex);
 		String responseXml = makeHttpRequest(kmsUrl + encToken, requestXml);
 
 		if (responseXml != null) {
-			return parseResponse(responseXml);
+			if(isValidResponse(responseXml)) {
+				return parseResponse(responseXml);
+			}
+			else{
+				throw new CpixClientException(responseXml);
+			}
 		} else {
 			throw new CpixClientException("Error occurred while getting content key info.");
 		}
@@ -88,7 +95,7 @@ public class PallyConCpixClient implements CpixClient{
 	}
 
 	private String buildRequestXml(String contentId, Map<TrackType, String> keyMap,
-		EnumSet<DrmType> drmTypes, EncryptionScheme encryptionScheme) {
+		EnumSet<DrmType> drmTypes, EncryptionScheme encryptionScheme, long periodIndex) {
 		try {
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -101,8 +108,9 @@ public class PallyConCpixClient implements CpixClient{
 			reqRoot.setAttribute("xmlns:speke", "urn:aws:amazon:com:speke");
 
 			Element reqContentKeyList = doc.createElement("cpix:ContentKeyList");
-			Element reqContentKeyUsageRuleList = doc.createElement("cpix:ContentKeyUsageRuleList");
 			Element reqDrmSystemList = doc.createElement("cpix:DRMSystemList");
+			Element reqContentKeyPeriodList = doc.createElement("cpix:ContentKeyPeriodList");
+			Element reqContentKeyUsageRuleList = doc.createElement("cpix:ContentKeyUsageRuleList");
 
 			for (TrackType track : keyMap.keySet()) {
 				Element reqContentKey = doc.createElement("cpix:ContentKey");
@@ -110,9 +118,20 @@ public class PallyConCpixClient implements CpixClient{
 				reqContentKey.setAttribute("commonEncryptionScheme", encryptionScheme.name().toLowerCase());
 				reqContentKeyList.appendChild(reqContentKey);
 
+				String keyPeriodId = "keyPeriod_" + UUID.randomUUID().toString();
+				Element reqContentKeyPeriod = doc.createElement("cpix:ContentKeyPeriod");
+				reqContentKeyPeriod.setAttribute("id", keyPeriodId);
+				reqContentKeyPeriod.setAttribute("index", Long.toString(periodIndex));
+				reqContentKeyPeriodList.appendChild(reqContentKeyPeriod);
+
 				Element reqContentKeyUsageRule = doc.createElement("cpix:ContentKeyUsageRule");
 				reqContentKeyUsageRule.setAttribute("intendedTrackType", track.name());
 				reqContentKeyUsageRule.setAttribute("kid", keyMap.get(track));
+				if(periodIndex > 0){
+					Element reqKeyPeriodFilter  = doc.createElement("cpix:KeyPeriodFilter");
+					reqKeyPeriodFilter.setAttribute("periodId", keyPeriodId);
+					reqContentKeyUsageRule.appendChild(reqKeyPeriodFilter);
+				}
 				reqContentKeyUsageRuleList.appendChild(reqContentKeyUsageRule);
 
 				for (DrmType drmType : drmTypes) {
@@ -145,8 +164,10 @@ public class PallyConCpixClient implements CpixClient{
 			}
 
 			reqRoot.appendChild(reqContentKeyList);
-			reqRoot.appendChild(reqContentKeyUsageRuleList);
 			reqRoot.appendChild(reqDrmSystemList);
+			if(periodIndex > 0)
+				reqRoot.appendChild(reqContentKeyPeriodList);
+			reqRoot.appendChild(reqContentKeyUsageRuleList);
 			doc.appendChild(reqRoot);
 
 			return convertDocumentToString(doc);
@@ -203,9 +224,22 @@ public class PallyConCpixClient implements CpixClient{
 			conn.disconnect();
 
 			return responseBuilder.toString();
+		}catch (CpixClientException ex) {
+			throw ex;
 		} catch (Exception ex) {
 			throw new CpixClientException("Error occurred during HTTP request.", ex);
 		}
+	}
+	private Boolean isValidResponse(String responseData) {
+		// This is because if the KMS server returns a custom error code, it will respond in JSON format.
+		Boolean result = false;
+		try{
+			JSONParser jsonParser = new JSONParser();
+			jsonParser.parse(responseData);
+		}catch (Exception e){
+			result = true;
+		}
+		return result;
 	}
 
 	private ContentPackagingInfo parseResponse(String responseXml) throws CpixClientException{
@@ -219,14 +253,28 @@ public class PallyConCpixClient implements CpixClient{
 			NodeList contentKeyUsageRuleList = doc.getElementsByTagName("cpix:ContentKeyUsageRule");
 			NodeList contentKeyList = doc.getElementsByTagName("cpix:ContentKey");
 			NodeList drmSystemList = doc.getElementsByTagName("cpix:DRMSystem");
+			NodeList contentKeyPeriodList = doc.getElementsByTagName("cpix:ContentKeyPeriod");
 
 			for (int i = 0; i < contentKeyUsageRuleList.getLength(); i++) {
+				MultiDrmInfo drmInfo = new MultiDrmInfo();
 				Element contentKeyUsageRule = (Element) contentKeyUsageRuleList.item(i);
 				String trackType = contentKeyUsageRule.getAttribute("intendedTrackType");
 				String keyId = contentKeyUsageRule.getAttribute("kid");
-				MultiDrmInfo drmInfo = new MultiDrmInfo();
 				drmInfo.setTrackType(trackType);
 				drmInfo.setKeyId(keyId);
+
+				if(contentKeyPeriodList.getLength() > 0) {
+					Element keyPeriodFilter = (Element) contentKeyUsageRule.getElementsByTagName(
+						"cpix:KeyPeriodFilter").item(0);
+					String periodId = keyPeriodFilter.getAttribute("periodId");
+					for (int j = 0; j < contentKeyPeriodList.getLength(); j++) {
+						Element contentKeyPeriod = (Element) contentKeyPeriodList.item(j);
+						if (periodId.equals(contentKeyPeriod.getAttribute("id"))) {
+							drmInfo.setPeriodIndex(contentKeyPeriod.getAttribute("index"));
+							break;
+						}
+					}
+				}
 				multiDrmInfos.add(drmInfo);
 			}
 

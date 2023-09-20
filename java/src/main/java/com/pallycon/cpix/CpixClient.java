@@ -10,5 +10,5 @@ import java.util.EnumSet;
 public interface CpixClient {
 	ContentPackagingInfo GetContentKeyInfoFromPallyConKMS(String contentId,
 		EnumSet<DrmType> drmTypes, EncryptionScheme encryptionScheme,
-		EnumSet<TrackType> trackTypes) throws CpixClientException;
+		EnumSet<TrackType> trackTypes, long periodIndex) throws CpixClientException;
 }

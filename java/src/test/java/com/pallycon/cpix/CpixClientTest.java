@@ -6,7 +6,7 @@ import com.pallycon.cpix.dto.EncryptionScheme;
 import com.pallycon.cpix.dto.MultiDrmInfo;
 import com.pallycon.cpix.dto.TrackType;
 import com.pallycon.cpix.exception.CpixClientException;
-import com.pallycon.cpix.util.StringUtil;
+import com.pallycon.cpix.utility.StringUtil;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ class CpixClientTest {
 		EnumSet<TrackType> trackTypes = EnumSet.of(TrackType.HD, TrackType.SD, TrackType.AUDIO);
 
 		ContentPackagingInfo packagingInfo = cpixClient.GetContentKeyInfoFromPallyConKMS(contentId,
-			drmTypes, encryptionScheme, trackTypes);
+			drmTypes, encryptionScheme, trackTypes, 0);
 
 		Assertions.assertNotNull(packagingInfo);
 		Assertions.assertEquals(contentId, packagingInfo.getContentId());

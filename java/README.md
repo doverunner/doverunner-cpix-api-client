@@ -19,7 +19,7 @@
  You can set the parameters of the function based on the packaging scenario you require. 
 
 ```java
-public ContentPackagingInfo GetContentKeyInfoFromPallyConKMS(String contentId, EnumSet<DrmType> drmTypes, EncryptionScheme encryptionScheme, EnumSet<TrackType> trackTypes) throws CpixClientException;
+ContentPackagingInfo GetContentKeyInfoFromPallyConKMS(String contentId, EnumSet<DrmType> drmTypes, EncryptionScheme encryptionScheme, EnumSet<TrackType> trackTypes, long periodIndex) throws CpixClientException;
 ```
 
 
@@ -54,7 +54,9 @@ public enum TrackType {
 }
 ```
 
-You can set multiple values using `EnumSet`, such as `EnumSet.of(DrmType.WIDEVINE, DrmType.PLAYREADY, DrmType.FAIRPLAY)` and `EnumSet.of(TrackType.HD, TrackType.SD, TrackType.AUDIO)` for **DrmType** and **TrackType**
+You can set multiple values using `EnumSet`, such as `EnumSet.of(DrmType.WIDEVINE, DrmType.PLAYREADY, DrmType.FAIRPLAY)` and `EnumSet.of(TrackType.HD, TrackType.SD, TrackType.AUDIO)` for **DrmType** and **TrackType**.
+
+If you want to enable key rotation, you can put a value greater than 0 in `periodIndex`.
 
 
 

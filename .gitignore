@@ -26,3 +26,9 @@ bin/
 .vs/
 
 .DS_Store
+
+obj/
+Debug/
+Release/
+*.user
+
