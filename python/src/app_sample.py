@@ -2,6 +2,7 @@ import json
 import base64
 from uuid import UUID
 from cpix_client import CpixClient, DrmType, EncryptionScheme, TrackType
+from exceptions import CpixClientError
 
 
 def make_json_string_from_data(pack_info):
@@ -39,22 +40,27 @@ def make_json_string_from_data(pack_info):
 
 def main():
     kms_url = "https://kms.pallycon.com/v2/cpix/pallycon/getKey/"
-    enc_token = ""  # PallyCon KMS token
-    content_id = ""  # Content id
+    enc_token = "eyJhY2Nlc3Nfa2V5IjoiZHNJb2xjN2gxRzhUVW1JMTdiWXd4aFV1TkZvRmNlNzJjeDllTU9rNjJ3YjhWTjJQZGdwV1lISXhTRVg5ZjBIaSIsInNpdGVfaWQiOiJERU1PIn0="  # PallyCon KMS token
+    content_id = "testcid"  # Content id
 
-    # Get the packaging information from PallyCon KMS Server
-    cpix_client = CpixClient(kms_url, enc_token)
-    pack_info \
-        = cpix_client.get_content_key_info_from_pallycon_kms(content_id
-                                                             , DrmType.WIDEVINE | DrmType.PLAYREADY | DrmType.FAIRPLAY)
-    # Convert data to JSON
-    json_pack_info = make_json_string_from_data(pack_info)
-    print(json.dumps(json_pack_info, indent=4))
+    try:
+        # Get the packaging information from PallyCon KMS Server
+        cpix_client = CpixClient(kms_url, enc_token)
+        pack_info = cpix_client.get_content_key_info_from_pallycon_kms(
+            content_id, DrmType.WIDEVINE | DrmType.PLAYREADY | DrmType.FAIRPLAY)
 
-    # Create to file
-    output_file = f'./{content_id}.json'
-    with open(output_file, 'w', encoding='utf-8') as file:
-        json.dump(json_pack_info, file, indent=4)
+        # Convert data to JSON
+        json_pack_info = make_json_string_from_data(pack_info)
+        print(json.dumps(json_pack_info, indent=4))
+
+        # Create to file
+        output_file = f'./{content_id}.json'
+        with open(output_file, 'w', encoding='utf-8') as file:
+            json.dump(json_pack_info, file, indent=4)
+    except CpixClientError as err_cpix:
+        print("CPIX Client error occurred: ", err_cpix)
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":

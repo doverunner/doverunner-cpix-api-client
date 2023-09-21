@@ -7,6 +7,7 @@ class MultiDrmInfo:
     key: str = ""
     key_id: str = ""
     iv: str = ""
+    period_index: int = 0
     widevine_pssh: str = ""
     widevine_pssh_payload: str = ""
     playready_pssh: str = ""

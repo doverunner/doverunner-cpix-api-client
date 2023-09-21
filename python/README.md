@@ -41,10 +41,13 @@
 ```python
 def get_content_key_info_from_pallycon_kms(self, content_id, drm_type
                                                , encryption_scheme=EncryptionScheme.CENC
-                                               , track_type=TrackType.ALL_TRACKS):
+                                               , track_type=TrackType.ALL_TRACKS
+                                               , period_index=0)
 ```
 
 ***encryption_scheme*** and ***track_type*** are optional parameters that default to `CENC` and `ALL_TRACKS`(single-key) when nothing is entered.
+
+If you want to enable key rotation, you can put a value greater than 0 in `period_index` which defaults to 0.
 
 
 
@@ -75,7 +78,7 @@ class TrackType(Flag):
     UHD2 = auto()
 ```
 
-You can set multiple values using the OR(`|`) operator, such as `WIDEVINE|PLAYREADY` or `SD|HD|AUDIO` for **DrmType** and **TrackType**
+You can set multiple values using the OR(`|`) operator, such as `WIDEVINE|PLAYREADY` or `SD|HD|AUDIO` for **DrmType** and **TrackType**.
 
 
 
