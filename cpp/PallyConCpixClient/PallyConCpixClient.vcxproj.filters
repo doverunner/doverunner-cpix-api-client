@@ -16,6 +16,7 @@
     <ClCompile Include="Helper\xmlParser.cpp">
       <Filter>helper</Filter>
     </ClCompile>
+    <ClCompile Include="CpixClientException.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CpixRequester.h" />
@@ -36,6 +37,7 @@
     <ClInclude Include="Helper\json\json.h">
       <Filter>helper\json</Filter>
     </ClInclude>
+    <ClInclude Include="CpixClientException.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="helper">

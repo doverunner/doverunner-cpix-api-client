@@ -7,6 +7,7 @@
 #include "helper/base64.h"
 #include "helper/json/json.h"
 #include "CpixClient.h"
+#include "CpixClientException.h"
 
 #if defined(_WIN32)
 FILE _iob[] = { *stdin, *stdout, *stderr };
@@ -151,6 +152,10 @@ int main()
         std::ofstream outFile(fileName.c_str());
         outFile << strJson << std::endl;
         outFile.close();
+    }
+    catch (pallycon::CpixClientException& e)
+    {
+        std::cout << "CpixClientException : " << e.what() << std::endl;
     }
     catch (std::exception& e)
     {

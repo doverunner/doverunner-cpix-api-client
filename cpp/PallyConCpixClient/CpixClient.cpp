@@ -35,7 +35,7 @@ namespace pallycon {
 		LPBYTE bytePtr = Base64Decode(buffer, outputLength);
 		if (bytePtr == NULL)
 		{
-			throw std::exception("base64Decode() Failed!");
+			throw CpixClientException("base64Decode() Failed!");
 		}
 		std::shared_ptr<BYTE> smartPtr(bytePtr, std::default_delete<BYTE[]>());
 		return smartPtr;
@@ -92,7 +92,7 @@ namespace pallycon {
 	{
 	}
 
-	std::string CpixClient::GetRequestData(std::string contentId, DrmType drmType, EncryptionScheme encryptionScheme, TrackType trackType)
+	std::string CpixClient::GetRequestData(std::string contentId, DrmType drmType, EncryptionScheme encryptionScheme, TrackType trackType, long periodIndex)
 	{
 		_keyMap.clear();
 		std::string requestData = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -128,8 +128,11 @@ namespace pallycon {
 		reqRoot.addAttribute("xmlns:speke", "urn:aws:amazon:com:speke");
 
 		XMLNode reqContentKeyList = reqRoot.addChild("cpix:ContentKeyList");
-		XMLNode reqContentKeyUsageRuleList = reqRoot.addChild("cpix:ContentKeyUsageRuleList");
 		XMLNode reqDRMList = reqRoot.addChild("cpix:DRMSystemList");
+		XMLNode reqContentKeyUsageRuleList = reqRoot.addChild("cpix:ContentKeyUsageRuleList");
+		XMLNode reqContentKeyPeriodList;
+		if(periodIndex > 0)
+			reqContentKeyPeriodList = reqRoot.addChild("cpix:ContentKeyPeriodList");
 
 		for (auto& map : _keyMap)
 		{
@@ -140,6 +143,21 @@ namespace pallycon {
 			XMLNode reqContentKeyUsageRule = reqContentKeyUsageRuleList.addChild("cpix:ContentKeyUsageRule");
 			reqContentKeyUsageRule.addAttribute("intendedTrackType", map.first.c_str());
 			reqContentKeyUsageRule.addAttribute("kid", map.second.c_str());
+
+			if (periodIndex > 0)
+			{
+				std::string keyPeriodId = "keyPeriod_";
+				char randomUuid[UUID_SIZE_INCLUDING_NULL_CHAR];
+				__GenerateUUID(randomUuid);
+				keyPeriodId.append(randomUuid);
+
+				XMLNode reqContentKeyPeriod = reqContentKeyPeriodList.addChild("cpix:ContentKeyPeriod");
+				reqContentKeyPeriod.addAttribute("id", keyPeriodId.c_str());
+				reqContentKeyPeriod.addAttribute("index", std::to_string(periodIndex).c_str());
+
+				XMLNode reqKeyPeriodFilter = reqContentKeyUsageRule.addChild("cpix:KeyPeriodFilter");
+				reqKeyPeriodFilter.addAttribute("periodId", keyPeriodId.c_str());
+			}
 
 			if (drmType & WIDEVINE)
 			{
@@ -196,11 +214,11 @@ namespace pallycon {
 		{
 			std::string errMsg;
 			errMsg = "CpixClient::parseResponse() : Response parsing failed. Response body: \n" + responseBody;
-			throw std::runtime_error(errMsg);
+			throw CpixClientException(errMsg);
 		}
 
 		if (responseRoot.getAttribute("id") == NULL)
-			throw std::runtime_error("CpixClient::parseResponse() : No CID in response.");
+			throw CpixClientException("CpixClient::parseResponse() : No CID in response.");
 
 		packInfo.contentId = responseRoot.getAttribute("id");
 
@@ -227,6 +245,21 @@ namespace pallycon {
 
 			drmInfo.trackType = resTrackType;
 			drmInfo.keyId = keyId;
+
+			XMLNode resKeyPeriodFilter = resContentKeyUsageRule.getChildNode("cpix:KeyPeriodFilter", 0);
+			if (!resKeyPeriodFilter.isEmpty())
+			{
+				XMLCSTR resPeriodId = resKeyPeriodFilter.getAttribute("periodId");
+				XMLNode resContentKeyPeriodList = responseRoot.getChildNode("cpix:ContentKeyPeriodList");
+				for (int i = 0; i < resContentKeyPeriodList.nChildNode(); i++)
+				{
+					XMLNode resContentKeyPeriod = resContentKeyPeriodList.getChildNode("cpix:ContentKeyPeriod", i);
+					if (0 == strcmp(resPeriodId, resContentKeyPeriod.getAttribute("id")))
+					{
+						drmInfo.periodIndex = resContentKeyPeriod.getAttribute("index");
+					}
+				}
+			}
 
 			XMLNode resContentKey;
 			for (int i = 0; i < resContentKeyList.nChildNode(); i++)
@@ -322,23 +355,24 @@ namespace pallycon {
 		return packInfo;
 	}
 
-	ContentPackagingInfo CpixClient::GetContentKeyInfoFromPallyConKMS(const std::string contentId, DrmType drmType, EncryptionScheme encryptionScheme, TrackType trackType)
+	ContentPackagingInfo CpixClient::GetContentKeyInfoFromPallyConKMS(const std::string contentId
+		, DrmType drmType, EncryptionScheme encryptionScheme, TrackType trackType, long periodIndex)
 	{
 		if (contentId.empty())
 		{
-			throw std::runtime_error("CpixClient::getContentPackagingInfoFromKmsServer() : invalid parameter.");
+			throw CpixClientException("CpixClient::getContentPackagingInfoFromKmsServer() : invalid parameter.");
 		}
 
 		std::shared_ptr<CurlHttpRequester> httpRequester(new CurlHttpRequester());
 		CpixRequester client(_kmsUrl, _encToken, httpRequester);
-		_lastRequestRowData = GetRequestData(contentId, drmType, encryptionScheme, trackType);
+		_lastRequestRowData = GetRequestData(contentId, drmType, encryptionScheme, trackType, periodIndex);
 		client.SetRequestData(_lastRequestRowData);
 		std::string responseRowData = client.Request();
 		if (responseRowData == "")
 		{
 			_lastRequestStatus = httpRequester->getRequestStatus();
 			std::string errorMessage = "CpixRequester:request() : " + httpRequester->getReason();
-			throw std::exception(errorMessage.c_str());
+			throw CpixClientException(errorMessage.c_str());
 		}
 		_lastResponseRowData = responseRowData;
 

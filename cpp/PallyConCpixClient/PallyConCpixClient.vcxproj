@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CpixClientException.cpp" />
     <ClCompile Include="CpixRequester.cpp" />
     <ClCompile Include="CpixClient.cpp" />
     <ClCompile Include="curlHttpException.cpp" />
@@ -30,6 +31,7 @@
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CpixClientException.h" />
     <ClInclude Include="CpixRequester.h" />
     <ClInclude Include="CpixClient.h" />
     <ClInclude Include="curlHttpException.h" />

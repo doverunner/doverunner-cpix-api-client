@@ -39,10 +39,12 @@
 * @param trackType				Track type for multi-key packaging. (e.g. SD|HD|AUDIO)
 *								For single-key packaging, it should be ALL_TRACKS.
 */
-ContentPackagingInfo GetContentKeyInfosFromPallyConKMS(const std::string cid, DrmType drmType, EncryptionScheme encryptionScheme = CENC, TrackType trackType = ALL_TRACKS);
+ContentPackagingInfo GetContentKeyInfosFromPallyConKMS(const std::string cid, DrmType drmType, EncryptionScheme encryptionScheme = CENC, TrackType trackType = ALL_TRACKS, long periodIndex = 0);
 ```
 
 ***EncryptionScheme*** and ***TrackType*** are optional parameters that default to `CENC` and `ALL_TRACKS`(single-key) when nothing is entered.
+
+If you want to enable key rotation, you can put a value greater than 0 in `periodIndex` which defaults to 0.
 
 
 
