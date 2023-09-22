@@ -35,6 +35,7 @@ namespace PallyCon {
 		String^ Key;
 		String^ KeyId;
 		String^ Iv;
+		String^ PeriodIndex;
 		String^ WidevinePSSH;
 		String^ WidevinePSSHpayload;
 		String^ PlayReadyPSSH;
@@ -63,6 +64,6 @@ namespace PallyCon {
 		String^ GetLastRequestRowData();
 		String^ GetLastResponseRowData();
 
-		ContentPackagingInfo GetContentKeyInfoFromPallyConKMS(String^ cid, DrmType drmType, EncryptionScheme encryptionScheme, TrackType trackType);
+		ContentPackagingInfo GetContentKeyInfoFromPallyConKMS(String^ cid, DrmType drmType, EncryptionScheme encryptionScheme, TrackType trackType, long periodIndex);
 	};
 }

@@ -81,7 +81,7 @@ namespace PallyCon
             {
                 CpixClientWrapper pallyconCpixClientWrapper = new CpixClientWrapper(kmsUrl, encToken);
                 ContentPackagingInfo contentPackagingInfo = pallyconCpixClientWrapper.GetContentKeyInfoFromPallyConKMS(
-                    contentId, DrmType.WIDEVINE| DrmType.PLAYREADY|DrmType.FAIRPLAY, EncryptionScheme.CENC, TrackType.ALL_TRACKS);
+                    contentId, DrmType.WIDEVINE| DrmType.PLAYREADY|DrmType.FAIRPLAY, EncryptionScheme.CENC, TrackType.ALL_TRACKS, 0);
                 
                 string jsonString = MakeJsonStringFromData(contentPackagingInfo);
                 Console.WriteLine(jsonString);

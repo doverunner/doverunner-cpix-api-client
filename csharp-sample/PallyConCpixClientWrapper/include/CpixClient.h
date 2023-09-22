@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include "CpixClientException.h"
 
 namespace pallycon
 {
@@ -96,6 +97,7 @@ namespace pallycon
 		std::string key;
 		std::string keyId;
 		std::string iv;
+		std::string periodIndex;
 		std::string widevinePSSH;
 		std::string widevinePSSHpayload;
 		std::string playreadyPSSH;
@@ -124,7 +126,7 @@ namespace pallycon
 	
 		std::map<std::string, std::string> _keyMap;
 
-		std::string GetRequestData(std::string contentId, DrmType drmType, EncryptionScheme encryptionScheme, TrackType trackType);
+		std::string GetRequestData(std::string contentId, DrmType drmType, EncryptionScheme encryptionScheme, TrackType trackType, long periodIndex);
 		ContentPackagingInfo ParseResponse(const std::string& responseBody);
 
 	public:
@@ -167,8 +169,9 @@ namespace pallycon
 		* @param encryptionScheme		Encryption scheme. (e.g. CENC, CBCS, etc)
 		* @param trackType				Track type for multi-key packaging. (e.g. SD|HD|AUDIO)
 		*								For single-key packaging, it should be ALL_TRACKS.
+		* @param periodIndex			Period index for key rotation.
 		*/
-		ContentPackagingInfo GetContentKeyInfoFromPallyConKMS(const std::string contentId, DrmType drmType, EncryptionScheme encryptionScheme = CENC, TrackType trackType = ALL_TRACKS);
+		ContentPackagingInfo GetContentKeyInfoFromPallyConKMS(const std::string contentId, DrmType drmType, EncryptionScheme encryptionScheme = CENC, TrackType trackType = ALL_TRACKS, long periodIndex = 0);
 	};
 }
 

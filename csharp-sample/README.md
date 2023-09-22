@@ -31,7 +31,7 @@ This sample shows the client code for CPIX communication with PallyCon KMS serve
 You can set the parameters of the function based on the packaging scenario you require.
 
 ```c#
-ContentPackagingInfo GetContentKeyInfosFromPallyConKMS(String^ cid, DrmType drmType, EncryptionScheme encryptionScheme, TrackType trackType);
+ContentPackagingInfo GetContentKeyInfosFromPallyConKMS(String^ cid, DrmType drmType, EncryptionScheme encryptionScheme, TrackType trackType, long periodIndex);
 
 public enum class EncryptionScheme {
     CENC,
@@ -59,6 +59,8 @@ public enum class TrackType {
 ```
 
 ***DrmType*** and ***TrackType*** are bit flags with bitwise operations, so you can set multiple values using the OR(`|`) operator, such as `WIDEVINE|PLAYREADY` or `SD|HD|AUDIO`.
+
+If you want to enable key rotation, you can put a value greater than 0 in `periodIndex`.
 
 
 
