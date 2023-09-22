@@ -169,7 +169,8 @@ namespace pallycon
 		* @param encryptionScheme		Encryption scheme. (e.g. CENC, CBCS, etc)
 		* @param trackType				Track type for multi-key packaging. (e.g. SD|HD|AUDIO)
 		*								For single-key packaging, it should be ALL_TRACKS.
-		* @param periodIndex			Period index for key rotation.
+		* @param periodIndex			Period index for key rotation. 
+										Setting a value greater than 0 enables key rotation.
 		*/
 		ContentPackagingInfo GetContentKeyInfoFromPallyConKMS(const std::string contentId, DrmType drmType, EncryptionScheme encryptionScheme = CENC, TrackType trackType = ALL_TRACKS, long periodIndex = 0);
 	};
