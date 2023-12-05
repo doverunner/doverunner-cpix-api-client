@@ -15,6 +15,7 @@ namespace pallycon
 	};
 
 	enum DrmType {
+		NONE,
 		WIDEVINE = (1 << 0),	// 0000 0001 // 0x01
 		PLAYREADY = (1 << 1),	// 0000 0010 // 0x02
 		FAIRPLAY = (1 << 2),	// 0000 0100 // 0x04

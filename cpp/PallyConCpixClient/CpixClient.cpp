@@ -1,5 +1,7 @@
 
+#include <string.h>
 #include <random>
+#include <algorithm>
 
 #include "CpixClient.h"
 #include "CpixRequester.h"

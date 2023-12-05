@@ -3,13 +3,6 @@
 #include <string.h>
 #include "base64.h"
 
-
-#ifdef _WIN32
-
-#pragma warning(disable:4244)
-
-#endif
-
 namespace pallycon {
 	static char __base64_table[] = {
 		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -39,7 +32,7 @@ namespace pallycon {
 
 	static char __base64_pad = '=';
 
-	const char* Base64Encode(LPBYTE pbData, int nLength, int* pnResultSize)
+	const char* Base64Encode(unsigned char* pbData, int nLength, int* pnResultSize)
 	{
 		int					i, sizeOfBuffer;
 		char* pszResult = NULL;
@@ -85,7 +78,7 @@ namespace pallycon {
 	}
 
 
-	LPBYTE Base64Decode(const char* pszString, int* pnLength)
+	unsigned char* Base64Decode(const char* pszString, int* pnLength)
 	{
 		int					result;
 		unsigned char* pbResult = NULL;
@@ -99,32 +92,32 @@ namespace pallycon {
 			goto finish;
 		}
 
-		pbResult = new BYTE[nStrLength + 1];
+		pbResult = new unsigned char[nStrLength + 1];
 
 		nOutputLength = 0;
 		for (i = 0; i < nStrLength; i += 4)
 		{
-			b1 = (BYTE)__reverse_table[pszString[i]];
-			b2 = (BYTE)__reverse_table[pszString[i + 1]];
-			b3 = (BYTE)__reverse_table[pszString[i + 2]];
-			b4 = (BYTE)__reverse_table[pszString[i + 3]];
+			b1 = (unsigned char)__reverse_table[pszString[i]];
+			b2 = (unsigned char)__reverse_table[pszString[i + 1]];
+			b3 = (unsigned char)__reverse_table[pszString[i + 2]];
+			b4 = (unsigned char)__reverse_table[pszString[i + 3]];
 
-			pbResult[nOutputLength++] = (BYTE)((b1 << 2) | (b2 >> 4));
+			pbResult[nOutputLength++] = (unsigned char)((b1 << 2) | (b2 >> 4));
 
 			if (pszString[i + 2] == '=')
 			{
-				pbResult[nOutputLength] = (BYTE)((b2 & 0x0F) << 4);
+				pbResult[nOutputLength] = (unsigned char)((b2 & 0x0F) << 4);
 			}
 			else
 			{
-				pbResult[nOutputLength++] = (BYTE)(((b2 & 0x0F) << 4) | (b3 >> 2));
+				pbResult[nOutputLength++] = (unsigned char)(((b2 & 0x0F) << 4) | (b3 >> 2));
 				if (pszString[i + 3] == '=')
 				{
-					pbResult[nOutputLength] = (BYTE)((b3 & 0x03) << 6);
+					pbResult[nOutputLength] = (unsigned char)((b3 & 0x03) << 6);
 				}
 				else
 				{
-					pbResult[nOutputLength++] = (BYTE)(((b3 & 0x03) << 6) | b4);
+					pbResult[nOutputLength++] = (unsigned char)(((b3 & 0x03) << 6) | b4);
 				}
 			}
 		}

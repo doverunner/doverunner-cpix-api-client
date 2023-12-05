@@ -1,8 +1,15 @@
 #pragma once
 
 #include <string>
-#include <Windows.h>
 #include <iostream>
+
+#if defined(_WIN32) || defined(_WIN64)
+#include <windows.h>
+#else
+typedef unsigned int	UINT;
+typedef unsigned char	BYTE;
+typedef unsigned char*	LPBYTE;
+#endif
 
 namespace pallycon {
 	std::string bytesToHex(unsigned char* data, int len);
