@@ -14,10 +14,9 @@ namespace pallycon {
 		std::shared_ptr<CurlHttpRequester> _requester;
 
 	public:
-		CpixRequester(const std::string& serverURL, const std::string& encToken, std::shared_ptr<CurlHttpRequester> httpRequester)
+		CpixRequester(const std::string& serverURL, std::shared_ptr<CurlHttpRequester> httpRequester)
 		{
 			_serverURL = serverURL;
-			_serverURL.append(encToken);
 			_requester = httpRequester;
 		}
 

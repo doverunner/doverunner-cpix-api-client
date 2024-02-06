@@ -119,7 +119,6 @@ namespace pallycon
 	{
 	private:
 		std::string _kmsUrl;
-		std::string _encToken;
 
 		int _lastRequestStatus;
 		std::string _lastRequestRowData;
@@ -134,10 +133,9 @@ namespace pallycon
 		/**
 		* Constructor.
 		*
-		* @param strKmsURL				PallyCon KMS Server URL
-		* @param strEncToken			PallyCon API authentication token
+		* @param kmsUrl					PallyCon KMS Server URL. The end of the KMS URL should contain an enc-token.
 		*/
-		CpixClient(std::string strKmsURL, std::string strEncToken);
+		CpixClient(std::string kmsUrl);
 		~CpixClient();
 
 

@@ -56,7 +56,7 @@ public enum TrackType {
 
 You can set multiple values using `EnumSet`, such as `EnumSet.of(DrmType.WIDEVINE, DrmType.PLAYREADY, DrmType.FAIRPLAY)` and `EnumSet.of(TrackType.HD, TrackType.SD, TrackType.AUDIO)` for **DrmType** and **TrackType**.
 
-If you want to enable key rotation, you can put a value greater than 0 in `periodIndex`.
+If you want to enable key rotation, you can set `key-rotation=true` to the Get parameter of KMS URL and put a value greater than 0 in `periodIndex`.
 
 
 
