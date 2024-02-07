@@ -23,7 +23,7 @@
 ## How to test
 1. Install [Python](https://www.python.org/downloads/)
 2. Clone or download this sample repository.
-3. Enter the `enc_token` and `content_id` in the *app_sample.py* file.
+3. Enter the `kms_url` and `content_id` in the *app_sample.py* file.
 4. Run *app_sample.py*.
 
    - `python ./app_sample.py`
@@ -47,7 +47,7 @@ def get_content_key_info_from_pallycon_kms(self, content_id, drm_type
 
 ***encryption_scheme*** and ***track_type*** are optional parameters that default to `CENC` and `ALL_TRACKS`(single-key) when nothing is entered.
 
-If you want to enable key rotation, you can put a value greater than 0 in `period_index` which defaults to 0.
+If you want to enable key rotation, you can set `key-rotation=true` to the Get parameter of KMS URL and put a value greater than 0 in `period_index` which defaults to 0.
 
 
 

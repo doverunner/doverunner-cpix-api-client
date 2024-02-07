@@ -57,7 +57,7 @@ namespace PallyCon {
 		pallycon::CpixClient* _cpixClient;
 
 	public:
-		CpixClientWrapper(String^ strKmsURL, String^ strKmsToken);
+		CpixClientWrapper(String^ kmsUrl);
 		virtual ~CpixClientWrapper();
 
 		int GetLastRequestStatus();

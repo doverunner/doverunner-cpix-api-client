@@ -133,14 +133,13 @@ std::string MakeJsonStringFromData(ContentPackagingInfo data)
 
 int main()
 {
-    std::string kmsUrl = "https://kms.pallycon.com/v2/cpix/pallycon/getKey/";
-    std::string encToken = ""; // PallyCon KMS token
-    std::string contentId = ""; // Content id
+    std::string kmsUrl = "https://kms.pallycon.com/v2/cpix/pallycon/getKey/{enc-token}"; // Put your KMS enc-token
+    std::string contentId = ""; // Put your content id
 
     try
     {
         // Get packaging information from PallyCon the KMS Server
-        std::shared_ptr<CpixClient> pCpixClient(new CpixClient(kmsUrl, encToken));
+        std::shared_ptr<CpixClient> pCpixClient(new CpixClient(kmsUrl));
         ContentPackagingInfo packInfos = pCpixClient->GetContentKeyInfoFromPallyConKMS(contentId, WIDEVINE|PLAYREADY|FAIRPLAY);
 
         // Convert data to JSON

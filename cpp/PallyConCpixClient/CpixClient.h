@@ -15,6 +15,7 @@ namespace pallycon
 	};
 
 	enum DrmType {
+		NONE,
 		WIDEVINE = (1 << 0),	// 0000 0001 // 0x01
 		PLAYREADY = (1 << 1),	// 0000 0010 // 0x02
 		FAIRPLAY = (1 << 2),	// 0000 0100 // 0x04
@@ -118,7 +119,6 @@ namespace pallycon
 	{
 	private:
 		std::string _kmsUrl;
-		std::string _encToken;
 
 		int _lastRequestStatus;
 		std::string _lastRequestRowData;
@@ -133,10 +133,9 @@ namespace pallycon
 		/**
 		* Constructor.
 		*
-		* @param strKmsURL				PallyCon KMS Server URL
-		* @param strEncToken			PallyCon API authentication token
+		* @param kmsUrl					PallyCon KMS Server URL. The end of the KMS URL should contain an enc-token.
 		*/
-		CpixClient(std::string strKmsURL, std::string strEncToken);
+		CpixClient(std::string kmsUrl);
 		~CpixClient();
 
 

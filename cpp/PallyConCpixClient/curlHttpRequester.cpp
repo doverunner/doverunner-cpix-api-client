@@ -1,7 +1,12 @@
 #include <memory>
+#include <cstring>
 #include "curlHttpRequester.h"
 #include "curlHttpException.h"
 #include "util.h"
+
+#if !defined(UNREFERENCED_PARAMETER)
+#define UNREFERENCED_PARAMETER(P)          (P)
+#endif
 
 #define MAX_REQUEST_DATA_SIZE		1024*1024
 

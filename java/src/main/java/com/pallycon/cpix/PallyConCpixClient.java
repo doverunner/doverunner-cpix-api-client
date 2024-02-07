@@ -41,11 +41,9 @@ public class PallyConCpixClient implements CpixClient{
 	private static final String HLS_NCG_SYSTEM_ID = "48582A1D-1FF4-426E-8CD5-06424FCC578C";
 
 	private String kmsUrl;
-	private String encToken;
 
-	public PallyConCpixClient(String kmsUrl, String encToken) {
+	public PallyConCpixClient(String kmsUrl) {
 		this.kmsUrl = kmsUrl;
-		this.encToken = encToken;
 	}
 	@Override
 	public ContentPackagingInfo GetContentKeyInfoFromPallyConKMS(String contentId,
@@ -56,7 +54,7 @@ public class PallyConCpixClient implements CpixClient{
 
 		String requestXml = buildRequestXml(contentId, keyMap, drmTypes, encryptionScheme,
 			periodIndex);
-		String responseXml = makeHttpRequest(kmsUrl + encToken, requestXml);
+		String responseXml = makeHttpRequest(kmsUrl, requestXml);
 
 		if (responseXml != null) {
 			if(isValidResponse(responseXml)) {

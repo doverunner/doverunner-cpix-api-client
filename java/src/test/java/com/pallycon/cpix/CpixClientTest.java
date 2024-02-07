@@ -30,10 +30,9 @@ class CpixClientTest {
 
 	@BeforeEach
 	public void setUp() {
-		// Initialize CpixClient with KMS URL and KMS token
-		String kmsUrl = "https://kms.pallycon.com/v2/cpix/pallycon/getKey/";
-		String encToken = ""; // Put your PallyCon KMS token
-		cpixClient = new PallyConCpixClient(kmsUrl, encToken);
+		// Initialize CpixClient with KMS URL
+		String kmsUrl = "https://kms.pallycon.com/v2/cpix/pallycon/getKey/{enc-token}"; // Put your KMS enc-token
+		cpixClient = new PallyConCpixClient(kmsUrl);
 	}
 
 	@Test

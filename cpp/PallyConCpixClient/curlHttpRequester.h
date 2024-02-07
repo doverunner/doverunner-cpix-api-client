@@ -2,7 +2,6 @@
 
 #include <string>
 #include <map>
-#include <windows.h>
 
 #include "libCurlHttp.h"
 

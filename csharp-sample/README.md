@@ -19,7 +19,7 @@ This sample shows the client code for CPIX communication with PallyCon KMS serve
 
 2. Open the solution file(*pallycon-cpix-client-csharp-sample.sln*) through Visual Studio 2022.
 
-3. Enter the `encToken` and `contentId`, build the project, and run the Sample.
+3. Enter the `kmsUrl` and `contentId`, build the project, and run the Sample.
 
 4. If the project runs successfully, it will show the response organized in JSON format on the sample console screen that was run, and also save this JSON data to a file.
 
@@ -60,7 +60,7 @@ public enum class TrackType {
 
 ***DrmType*** and ***TrackType*** are bit flags with bitwise operations, so you can set multiple values using the OR(`|`) operator, such as `WIDEVINE|PLAYREADY` or `SD|HD|AUDIO`.
 
-If you want to enable key rotation, you can put a value greater than 0 in `periodIndex`.
+If you want to enable key rotation, you can set `key-rotation=true` to the Get parameter of KMS URL and put a value greater than 0 in `periodIndex`.
 
 
 

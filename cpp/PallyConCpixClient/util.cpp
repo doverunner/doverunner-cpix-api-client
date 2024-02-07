@@ -1,4 +1,5 @@
 #include <sstream>
+#include <stdarg.h>
 #include "util.h"
 
 namespace pallycon {
@@ -85,7 +86,7 @@ namespace pallycon {
 		if (pos == std::string::npos)
 		{
 			// Invalid URL
-			throw std::exception(formatMessage("parseUrl(%s) : Invalid URL #1", url).c_str());
+			throw std::runtime_error(formatMessage("parseUrl(%s) : Invalid URL #1", url).c_str());
 		}
 
 		m_protocol = strURL.substr(0, pos + 2);
@@ -96,7 +97,7 @@ namespace pallycon {
 		pos = strURL.find('/');
 		if (pos == std::string::npos)
 		{
-			throw std::exception(formatMessage("parseUrl(%s) : Invalid URL #2", url).c_str());
+			throw std::runtime_error(formatMessage("parseUrl(%s) : Invalid URL #2", url).c_str());
 		}
 
 		m_path = strURL.substr(pos, strURL.length() - pos);
@@ -112,7 +113,7 @@ namespace pallycon {
 			nPort = atoi(port.c_str());
 			if (nPort == 0)
 			{
-				throw std::exception("NcgHttpRequester::setURL() : cannot find port");
+				throw std::runtime_error("NcgHttpRequester::setURL() : cannot find port");
 			}
 			--pos;
 			m_port = nPort;
