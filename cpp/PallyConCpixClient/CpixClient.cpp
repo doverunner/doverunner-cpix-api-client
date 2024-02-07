@@ -83,10 +83,9 @@ namespace pallycon {
 		pUUID[t] = 0;
 	}
 
-	CpixClient::CpixClient(std::string strKmsURL, std::string strEncToken)
+	CpixClient::CpixClient(std::string kmsUrl)
 	{
-		_kmsUrl = strKmsURL;
-		_encToken = strEncToken;
+		_kmsUrl = kmsUrl;
 		_lastRequestStatus = 0;
 	}
 
@@ -366,7 +365,7 @@ namespace pallycon {
 		}
 
 		std::shared_ptr<CurlHttpRequester> httpRequester(new CurlHttpRequester());
-		CpixRequester client(_kmsUrl, _encToken, httpRequester);
+		CpixRequester client(_kmsUrl, httpRequester);
 		_lastRequestRowData = GetRequestData(contentId, drmType, encryptionScheme, trackType, periodIndex);
 		client.SetRequestData(_lastRequestRowData);
 		std::string responseRowData = client.Request();

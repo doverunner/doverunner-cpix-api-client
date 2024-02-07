@@ -143,16 +143,15 @@ def parse_response(response_data):
 
 
 class CpixClient:
-    def __init__(self, kms_url, enc_token):
+    def __init__(self, kms_url):
         self._kms_url = kms_url
-        self._enc_token = enc_token
 
     def get_content_key_info_from_pallycon_kms(self, content_id, drm_type
                                                , encryption_scheme=EncryptionScheme.CENC
                                                , track_type=TrackType.ALL_TRACKS
                                                , period_index=0):
         # Set PallyCon KMS server URL
-        url = f"{self._kms_url}{self._enc_token}"
+        url = f"{self._kms_url}"
         # Get request body data
         cpix_request_data = get_request_data(content_id, drm_type, encryption_scheme, track_type, period_index)
 

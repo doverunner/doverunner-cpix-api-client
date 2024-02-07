@@ -18,7 +18,7 @@
 ## How to build and test
 1. Clone or download this sample repository.
 2. Open the solution file(*pallycon-cpix-client-cpp.sln*) through Visual Studio 2022.
-3. Enter the `encToken` and `contentId`, build the project, and run the Sample.
+3. Enter the `kmsUrl` and `contentId`, build the project, and run the Sample.
 4. If the project runs successfully, it will show the response organized in JSON format on the sample console screen that was run, and also save this JSON data to a file.
 
    - Originally, CPIX Responses are received in XML format, but <u>for readability, the sample creates them in json format</u>.
@@ -44,7 +44,7 @@ ContentPackagingInfo GetContentKeyInfosFromPallyConKMS(const std::string cid, Dr
 
 ***EncryptionScheme*** and ***TrackType*** are optional parameters that default to `CENC` and `ALL_TRACKS`(single-key) when nothing is entered.
 
-If you want to enable key rotation, you can put a value greater than 0 in `periodIndex` which defaults to 0.
+If you want to enable key rotation, you can set `key-rotation=true` to the Get parameter of KMS URL and put a value greater than 0 in `periodIndex` which defaults to 0.
 
 
 

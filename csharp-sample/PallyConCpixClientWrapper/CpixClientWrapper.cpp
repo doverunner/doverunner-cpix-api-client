@@ -4,9 +4,8 @@
 #include "CpixClientWrapper.h"
 
 namespace PallyCon {
-	PallyCon::CpixClientWrapper::CpixClientWrapper(String^ strKmsURL, String^ strKmsToken) 
-		: _cpixClient(new pallycon::CpixClient(msclr::interop::marshal_as<std::string>(strKmsURL)
-		, msclr::interop::marshal_as<std::string>(strKmsToken)))
+	PallyCon::CpixClientWrapper::CpixClientWrapper(String^ kmsUrl) 
+		: _cpixClient(new pallycon::CpixClient(msclr::interop::marshal_as<std::string>(kmsUrl)))
 	{
 	}
 

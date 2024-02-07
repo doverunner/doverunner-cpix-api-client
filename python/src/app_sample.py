@@ -39,13 +39,12 @@ def make_json_string_from_data(pack_info):
 
 
 def main():
-    kms_url = "https://kms.pallycon.com/v2/cpix/pallycon/getKey/"
-    enc_token = "eyJhY2Nlc3Nfa2V5IjoiZHNJb2xjN2gxRzhUVW1JMTdiWXd4aFV1TkZvRmNlNzJjeDllTU9rNjJ3YjhWTjJQZGdwV1lISXhTRVg5ZjBIaSIsInNpdGVfaWQiOiJERU1PIn0="  # PallyCon KMS token
-    content_id = "testcid"  # Content id
+    kms_url = "https://kms.pallycon.com/v2/cpix/pallycon/getKey/{enc-token}" # Put your KMS enc-token
+    content_id = ""  # Put your content id
 
     try:
         # Get the packaging information from PallyCon KMS Server
-        cpix_client = CpixClient(kms_url, enc_token)
+        cpix_client = CpixClient(kms_url)
         pack_info = cpix_client.get_content_key_info_from_pallycon_kms(
             content_id, DrmType.WIDEVINE | DrmType.PLAYREADY | DrmType.FAIRPLAY)
 

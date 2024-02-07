@@ -73,13 +73,12 @@ namespace PallyCon
         }
         static void Main(string[] args)
         {
-            string kmsUrl = "https://kms.pallycon.com/v2/cpix/pallycon/getKey/";
-            string encToken = ""; // PallyCon KMS token
-            string contentId = ""; // Content id
+            string kmsUrl = "https://kms.pallycon.com/v2/cpix/pallycon/getKey/{enc-token}"; // Put your KMS enc-token 
+            string contentId = ""; // Put your content id
 
             try
             {
-                CpixClientWrapper pallyconCpixClientWrapper = new CpixClientWrapper(kmsUrl, encToken);
+                CpixClientWrapper pallyconCpixClientWrapper = new CpixClientWrapper(kmsUrl);
                 ContentPackagingInfo contentPackagingInfo = pallyconCpixClientWrapper.GetContentKeyInfoFromPallyConKMS(
                     contentId, DrmType.WIDEVINE| DrmType.PLAYREADY|DrmType.FAIRPLAY, EncryptionScheme.CENC, TrackType.ALL_TRACKS, 0);
                 
