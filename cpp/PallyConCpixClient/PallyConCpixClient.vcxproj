@@ -133,7 +133,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>lib/curl-8.1.2/x86/libcurld.lib;lib/openssl-1.0.2/x86/libeay32.lib;lib/openssl-1.0.2/x86/ssleay32.lib;crypt32.lib;legacy_stdio_definitions.lib;ws2_32.lib;wldap32.lib</AdditionalDependencies>
+      <AdditionalDependencies>lib/curl-8.6.0/x86/libcurld.lib;lib/openssl-3.2.1/x86/libcrypto_static.lib;lib/openssl-3.2.1/x86/libssl_static.lib;crypt32.lib;legacy_stdio_definitions.lib;ws2_32.lib;wldap32.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -156,7 +156,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>lib/curl-8.1.2/x86/libcurl.lib;lib/openssl-1.0.2/x86/libeay32.lib;lib/openssl-1.0.2/x86/ssleay32.lib;crypt32.lib;legacy_stdio_definitions.lib;ws2_32.lib;wldap32.lib</AdditionalDependencies>
+      <AdditionalDependencies>lib/curl-8.6.0/x86/libcurl.lib;lib/openssl-3.2.1/x86/libcrypto_static.lib;lib/openssl-3.2.1/x86/libssl_static.lib;crypt32.lib;legacy_stdio_definitions.lib;ws2_32.lib;wldap32.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -175,7 +175,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>lib/curl-8.1.2/x64/libcurld.lib;lib/openssl-1.0.2/x64/libeay32.lib;lib/openssl-1.0.2/x64/ssleay32.lib;crypt32.lib;legacy_stdio_definitions.lib;ws2_32.lib;wldap32.lib</AdditionalDependencies>
+      <AdditionalDependencies>lib/curl-8.6.0/x64/libcurld.lib;lib/openssl-3.2.1/x64/libcrypto_static.lib;lib/openssl-3.2.1/x64/libssl_static.lib;crypt32.lib;legacy_stdio_definitions.lib;ws2_32.lib;wldap32.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -198,7 +198,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>lib/curl-8.1.2/x64/libcurl.lib;lib/openssl-1.0.2/x64/libeay32.lib;lib/openssl-1.0.2/x64/ssleay32.lib;crypt32.lib;legacy_stdio_definitions.lib;ws2_32.lib;wldap32.lib</AdditionalDependencies>
+      <AdditionalDependencies>lib/curl-8.6.0/x64/libcurl.lib;lib/openssl-3.2.1/x64/libcrypto_static.lib;lib/openssl-3.2.1/x64/libssl_static.lib;crypt32.lib;legacy_stdio_definitions.lib;ws2_32.lib;wldap32.lib</AdditionalDependencies>
       <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
     </Lib>
   </ItemDefinitionGroup>
