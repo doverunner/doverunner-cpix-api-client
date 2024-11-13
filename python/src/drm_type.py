@@ -7,3 +7,4 @@ class DrmType(Flag):
     FAIRPLAY = auto()
     NCG = auto()
     HLS_NCG = auto()
+    WISEPLAY = auto()

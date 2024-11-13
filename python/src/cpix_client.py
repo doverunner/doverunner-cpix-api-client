@@ -14,6 +14,7 @@ _playready_system_id = "9A04F079-9840-4286-AB92-E65BE0885F95"
 _fairplay_system_id = "94CE86FB-07FF-4F43-ADB8-93D2FA968CA2"
 _ncg_system_id = "D9E4411A-E886-4909-A380-A77F28D52335"
 _hls_ncg_system_id = "48582A1D-1FF4-426E-8CD5-06424FCC578C"
+_wiseplay_system_id = "3D5E6D35-9B9A-41E8-B843-DD3C6E72C42C"
 
 
 def get_request_data(content_id, drm_type, encryption_scheme, track_type, period_index):
@@ -68,6 +69,8 @@ def get_request_data(content_id, drm_type, encryption_scheme, track_type, period
             SubElement(req_drm_system_list, "cpix:DRMSystem", {"kid": key_map[track], "systemId": _ncg_system_id})
         if DrmType.HLS_NCG in drm_type:
             SubElement(req_drm_system_list, "cpix:DRMSystem", {"kid": key_map[track], "systemId": _hls_ncg_system_id})
+        if DrmType.WISEPLAY in drm_type:
+            SubElement(req_drm_system_list, "cpix:DRMSystem", {"kid": key_map[track], "systemId": _wiseplay_system_id})
 
     return tostring(req_root, encoding='utf8', method="xml")
 
@@ -135,6 +138,10 @@ def parse_response(response_data):
                 elif system_id == _hls_ncg_system_id:
                     multidrm_info.ncg_hls_key_uri \
                         = base64.b64decode(res_drm_system.find("cpix:URIExtXKey", namespaces).text).decode('utf-8')
+                elif system_id == _wiseplay_system_id:
+                    multidrm_info.wiseplay_pssh = res_drm_system.find("cpix:PSSH", namespaces).text
+                    multidrm_info.wiseplay_pssh_payload \
+                        = res_drm_system.find("cpix:ContentProtectionData", namespaces).text
 
     pack_info = ContentPackagingInfo(res_root.get("id"))
     pack_info.multidrm_infos = multidrm_infos

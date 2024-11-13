@@ -5,5 +5,6 @@ public enum DrmType {
 	PLAYREADY,
 	FAIRPLAY,
 	NCG,
-	HLS_NCG
+	HLS_NCG,
+	WISEPLAY
 }

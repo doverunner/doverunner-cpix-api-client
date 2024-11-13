@@ -19,6 +19,7 @@ namespace PallyCon {
 		FAIRPLAY = (1 << 2),
 		NCG = (1 << 3),
 		HLS_NCG = (1 << 4),
+		WISEPLAY = (1 << 5),
 	};
 
 	public enum class TrackType {
@@ -44,6 +45,8 @@ namespace PallyCon {
 		String^ FairplayHlsKeyUri;
 		String^ NcgCek;
 		String^ NcgHlsKeyUri;
+		String^ WiseplayPSSH;
+		String^ WiseplayPSSHpayload;
 	};
 
 	public value struct ContentPackagingInfo {

@@ -20,7 +20,8 @@ namespace pallycon
 		PLAYREADY = (1 << 1),	// 0000 0010 // 0x02
 		FAIRPLAY = (1 << 2),	// 0000 0100 // 0x04
 		NCG = (1 << 3),			// 0000 1000 // 0x08
-		HLS_NCG = (1 << 4),		// 0001 0000 // 0x10
+		HLS_NCG = (1 << 4),		// 0001 0000 // 0x16
+		WISEPLAY = (1 << 5),	// 0010 0000 // 0x32
 	};
 
 	enum TrackType {
@@ -107,6 +108,8 @@ namespace pallycon
 		std::string fairplayHlsKeyUri;
 		std::string ncgCek;
 		std::string ncgHlsKeyUri;
+		std::string wiseplayPSSH;
+		std::string wiseplayPSSHpayload;
 	};
 
 	struct ContentPackagingInfo

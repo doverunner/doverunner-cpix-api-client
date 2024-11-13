@@ -56,6 +56,8 @@ namespace PallyCon {
 				drmInfo.FairplayHlsKeyUri = gcnew String(multiDrmInfo.fairplayHlsKeyUri.c_str());
 				drmInfo.NcgCek = gcnew String(multiDrmInfo.ncgCek.c_str());
 				drmInfo.NcgHlsKeyUri = gcnew String(multiDrmInfo.ncgHlsKeyUri.c_str());
+				drmInfo.WiseplayPSSH = gcnew String(multiDrmInfo.wiseplayPSSH.c_str());
+				drmInfo.WiseplayPSSHpayload = gcnew String(multiDrmInfo.wiseplayPSSHpayload.c_str());
 
 				packInfos.DrmInfos->Add(drmInfo);
 			}

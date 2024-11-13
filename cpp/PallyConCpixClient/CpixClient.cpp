@@ -11,11 +11,12 @@
 namespace pallycon {
 #define UUID_SIZE_INCLUDING_NULL_CHAR 37
 
-#define WIDEVINE_SYSMTE_ID	"EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED"
-#define PLAYREADY_SYSMTE_ID	"9A04F079-9840-4286-AB92-E65BE0885F95"
-#define FAIRPLAY_SYSMTE_ID	"94CE86FB-07FF-4F43-ADB8-93D2FA968CA2"
-#define NCG_SYSMTE_ID		"D9E4411A-E886-4909-A380-A77F28D52335"
-#define HLS_NCG_SYSMTE_ID	"48582A1D-1FF4-426E-8CD5-06424FCC578C"
+#define WIDEVINE_SYSTEM_ID	"EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED"
+#define PLAYREADY_SYSTEM_ID	"9A04F079-9840-4286-AB92-E65BE0885F95"
+#define FAIRPLAY_SYSTEM_ID	"94CE86FB-07FF-4F43-ADB8-93D2FA968CA2"
+#define NCG_SYSTEM_ID		"D9E4411A-E886-4909-A380-A77F28D52335"
+#define HLS_NCG_SYSTEM_ID	"48582A1D-1FF4-426E-8CD5-06424FCC578C"
+#define WISEPLAY_SYSTEM_ID	"3D5E6D35-9B9A-41E8-B843-DD3C6E72C42C"
 
 	static const char* __encryption_scheme_str[] = { "cenc", "cbc1", "cens", "cbcs" };
 	static const TrackType AllTrackTypes[] = { AUDIO, SD, HD, UHD1, UHD2 };
@@ -165,7 +166,7 @@ namespace pallycon {
 				XMLNode reqWidevineNode = reqDRMList.addChild("cpix:DRMSystem");
 
 				reqWidevineNode.addAttribute("kid", map.second.c_str());
-				reqWidevineNode.addAttribute("systemId", WIDEVINE_SYSMTE_ID);
+				reqWidevineNode.addAttribute("systemId", WIDEVINE_SYSTEM_ID);
 			}
 
 			if (drmType & PLAYREADY)
@@ -173,7 +174,7 @@ namespace pallycon {
 				XMLNode reqPlayReadyNode = reqDRMList.addChild("cpix:DRMSystem");
 
 				reqPlayReadyNode.addAttribute("kid", map.second.c_str());
-				reqPlayReadyNode.addAttribute("systemId", PLAYREADY_SYSMTE_ID);
+				reqPlayReadyNode.addAttribute("systemId", PLAYREADY_SYSTEM_ID);
 			}
 
 			if (drmType & FAIRPLAY)
@@ -181,7 +182,7 @@ namespace pallycon {
 				XMLNode reqFairPlayNode = reqDRMList.addChild("cpix:DRMSystem");
 
 				reqFairPlayNode.addAttribute("kid", map.second.c_str());
-				reqFairPlayNode.addAttribute("systemId", FAIRPLAY_SYSMTE_ID);
+				reqFairPlayNode.addAttribute("systemId", FAIRPLAY_SYSTEM_ID);
 			}
 
 			if (drmType & NCG)
@@ -189,7 +190,7 @@ namespace pallycon {
 				XMLNode reqNcgNode = reqDRMList.addChild("cpix:DRMSystem");
 
 				reqNcgNode.addAttribute("kid", map.second.c_str());
-				reqNcgNode.addAttribute("systemId", NCG_SYSMTE_ID);
+				reqNcgNode.addAttribute("systemId", NCG_SYSTEM_ID);
 			}
 
 			if (drmType & HLS_NCG)
@@ -197,7 +198,15 @@ namespace pallycon {
 				XMLNode reqHlsNcgNode = reqDRMList.addChild("cpix:DRMSystem");
 
 				reqHlsNcgNode.addAttribute("kid", map.second.c_str());
-				reqHlsNcgNode.addAttribute("systemId", HLS_NCG_SYSMTE_ID);
+				reqHlsNcgNode.addAttribute("systemId", HLS_NCG_SYSTEM_ID);
+			}
+
+			if (drmType & WISEPLAY)
+			{
+				XMLNode reqWisePlayNode = reqDRMList.addChild("cpix:DRMSystem");
+
+				reqWisePlayNode.addAttribute("kid", map.second.c_str());
+				reqWisePlayNode.addAttribute("systemId", WISEPLAY_SYSTEM_ID);
 			}
 		}
 
@@ -223,11 +232,12 @@ namespace pallycon {
 
 		packInfo.contentId = responseRoot.getAttribute("id");
 
-		std::string systemId_widevine = WIDEVINE_SYSMTE_ID;
-		std::string systemId_playready = PLAYREADY_SYSMTE_ID;
-		std::string systemId_fairplay = FAIRPLAY_SYSMTE_ID;
-		std::string systemId_ncg = NCG_SYSMTE_ID;
-		std::string systemId_hlsNcg = HLS_NCG_SYSMTE_ID;
+		std::string systemId_widevine = WIDEVINE_SYSTEM_ID;
+		std::string systemId_playready = PLAYREADY_SYSTEM_ID;
+		std::string systemId_fairplay = FAIRPLAY_SYSTEM_ID;
+		std::string systemId_ncg = NCG_SYSTEM_ID;
+		std::string systemId_hlsNcg = HLS_NCG_SYSTEM_ID;
+		std::string systemId_wiseplay = WISEPLAY_SYSTEM_ID;
 
 		XMLNode resContentKeyList = responseRoot.getChildNode("cpix:ContentKeyList");
 		XMLNode resContentKeyUsageRuleList = responseRoot.getChildNode("cpix:ContentKeyUsageRuleList");
@@ -284,7 +294,7 @@ namespace pallycon {
 				drmInfo.iv = resIv;
 			}
 
-			XMLNode resWidevineNode, resPlayReadyNode, resFairPlayNode, resNcgNode, reqHlsNcgNode;
+			XMLNode resWidevineNode, resPlayReadyNode, resFairPlayNode, resNcgNode, resHlsNcgNode, resWisePlayNode;
 			for (int i = 0; i < resDRMSystemList.nChildNode(); i++)
 			{
 				XMLNode resDrmNode = resDRMSystemList.getChildNode("cpix:DRMSystem", i);
@@ -309,7 +319,11 @@ namespace pallycon {
 					}
 					else if (0 == strcmp(resSystemId, systemId_hlsNcg.c_str()))
 					{
-						reqHlsNcgNode = resDrmNode.deepCopy();
+						resHlsNcgNode = resDrmNode.deepCopy();
+					}
+					else if (0 == strcmp(resSystemId, systemId_wiseplay.c_str()))
+					{
+						resWisePlayNode = resDrmNode.deepCopy();
 					}
 				}
 			}
@@ -342,12 +356,18 @@ namespace pallycon {
 				drmInfo.ncgCek = strCek.c_str();
 			}
 
-			if (!reqHlsNcgNode.isEmpty())
+			if (!resHlsNcgNode.isEmpty())
 			{
 				int outputLength = 0;
-				std::shared_ptr<BYTE> keyUri = __Base64Decode(reqHlsNcgNode.getChildNode("cpix:URIExtXKey").getText(), &outputLength);
+				std::shared_ptr<BYTE> keyUri = __Base64Decode(resHlsNcgNode.getChildNode("cpix:URIExtXKey").getText(), &outputLength);
 				std::string strKeyUri(keyUri.get(), keyUri.get() + outputLength);
 				drmInfo.ncgHlsKeyUri = strKeyUri.c_str();
+			}
+
+			if (!resWisePlayNode.isEmpty())
+			{
+				drmInfo.wiseplayPSSHpayload = resWisePlayNode.getChildNode("cpix:ContentProtectionData").getText();
+				drmInfo.wiseplayPSSH = resWisePlayNode.getChildNode("cpix:PSSH").getText();
 			}
 
 			packInfo.multiDrmInfos.push_back(drmInfo);

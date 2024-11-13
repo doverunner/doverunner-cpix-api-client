@@ -33,22 +33,25 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.json.simple.parser.JSONParser;
 
-public class PallyConCpixClient implements CpixClient{
+public class PallyConCpixClient implements CpixClient {
+
 	private static final String WIDEVINE_SYSTEM_ID = "EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED";
 	private static final String PLAYREADY_SYSTEM_ID = "9A04F079-9840-4286-AB92-E65BE0885F95";
 	private static final String FAIRPLAY_SYSTEM_ID = "94CE86FB-07FF-4F43-ADB8-93D2FA968CA2";
 	private static final String NCG_SYSTEM_ID = "D9E4411A-E886-4909-A380-A77F28D52335";
 	private static final String HLS_NCG_SYSTEM_ID = "48582A1D-1FF4-426E-8CD5-06424FCC578C";
+	private static final String WISEPLAY_SYSTEM_ID = "3D5E6D35-9B9A-41E8-B843-DD3C6E72C42C";
 
 	private String kmsUrl;
 
 	public PallyConCpixClient(String kmsUrl) {
 		this.kmsUrl = kmsUrl;
 	}
+
 	@Override
 	public ContentPackagingInfo GetContentKeyInfoFromPallyConKMS(String contentId,
 		EnumSet<DrmType> drmTypes, EncryptionScheme encryptionScheme,
-		EnumSet<TrackType> trackTypes, long periodIndex) throws CpixClientException{
+		EnumSet<TrackType> trackTypes, long periodIndex) throws CpixClientException {
 
 		Map<TrackType, String> keyMap = buildKeyMap(trackTypes);
 
@@ -57,16 +60,16 @@ public class PallyConCpixClient implements CpixClient{
 		String responseXml = makeHttpRequest(kmsUrl, requestXml);
 
 		if (responseXml != null) {
-			if(isValidResponse(responseXml)) {
+			if (isValidResponse(responseXml)) {
 				return parseResponse(responseXml);
-			}
-			else{
+			} else {
 				throw new CpixClientException(responseXml);
 			}
 		} else {
 			throw new CpixClientException("Error occurred while getting content key info.");
 		}
 	}
+
 	private Map<TrackType, String> buildKeyMap(EnumSet<TrackType> trackTypes) {
 		Map<TrackType, String> keyMap = new HashMap<>();
 		if (trackTypes.contains(TrackType.ALL_TRACKS)) {
@@ -113,7 +116,8 @@ public class PallyConCpixClient implements CpixClient{
 			for (TrackType track : keyMap.keySet()) {
 				Element reqContentKey = doc.createElement("cpix:ContentKey");
 				reqContentKey.setAttribute("kid", keyMap.get(track));
-				reqContentKey.setAttribute("commonEncryptionScheme", encryptionScheme.name().toLowerCase());
+				reqContentKey.setAttribute("commonEncryptionScheme",
+					encryptionScheme.name().toLowerCase());
 				reqContentKeyList.appendChild(reqContentKey);
 
 				String keyPeriodId = "keyPeriod_" + UUID.randomUUID().toString();
@@ -125,8 +129,8 @@ public class PallyConCpixClient implements CpixClient{
 				Element reqContentKeyUsageRule = doc.createElement("cpix:ContentKeyUsageRule");
 				reqContentKeyUsageRule.setAttribute("intendedTrackType", track.name());
 				reqContentKeyUsageRule.setAttribute("kid", keyMap.get(track));
-				if(periodIndex > 0){
-					Element reqKeyPeriodFilter  = doc.createElement("cpix:KeyPeriodFilter");
+				if (periodIndex > 0) {
+					Element reqKeyPeriodFilter = doc.createElement("cpix:KeyPeriodFilter");
 					reqKeyPeriodFilter.setAttribute("periodId", keyPeriodId);
 					reqContentKeyUsageRule.appendChild(reqKeyPeriodFilter);
 				}
@@ -150,6 +154,8 @@ public class PallyConCpixClient implements CpixClient{
 						case HLS_NCG:
 							systemId = HLS_NCG_SYSTEM_ID;
 							break;
+						case WISEPLAY:
+							systemId = WISEPLAY_SYSTEM_ID;
 					}
 
 					if (systemId != null) {
@@ -163,8 +169,9 @@ public class PallyConCpixClient implements CpixClient{
 
 			reqRoot.appendChild(reqContentKeyList);
 			reqRoot.appendChild(reqDrmSystemList);
-			if(periodIndex > 0)
+			if (periodIndex > 0) {
 				reqRoot.appendChild(reqContentKeyPeriodList);
+			}
 			reqRoot.appendChild(reqContentKeyUsageRuleList);
 			doc.appendChild(reqRoot);
 
@@ -193,7 +200,8 @@ public class PallyConCpixClient implements CpixClient{
 			return null;
 		}
 	}
-	private String makeHttpRequest(String url, String requestData) throws CpixClientException{
+
+	private String makeHttpRequest(String url, String requestData) throws CpixClientException {
 		try {
 			URL urlObj = new URL(url);
 			HttpURLConnection conn = (HttpURLConnection) urlObj.openConnection();
@@ -209,38 +217,42 @@ public class PallyConCpixClient implements CpixClient{
 			// Read the response
 			StringBuilder responseBuilder = new StringBuilder();
 			if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+				BufferedReader in = new BufferedReader(
+					new InputStreamReader(conn.getInputStream()));
 				String inputLine;
 				while ((inputLine = in.readLine()) != null) {
 					responseBuilder.append(inputLine);
 				}
 				in.close();
 			} else {
-				throw new CpixClientException("HTTP Request Error: " + conn.getResponseCode() + " - " + conn.getResponseMessage());
+				throw new CpixClientException(
+					"HTTP Request Error: " + conn.getResponseCode() + " - "
+						+ conn.getResponseMessage());
 			}
 
 			conn.disconnect();
 
 			return responseBuilder.toString();
-		}catch (CpixClientException ex) {
+		} catch (CpixClientException ex) {
 			throw ex;
 		} catch (Exception ex) {
 			throw new CpixClientException("Error occurred during HTTP request.", ex);
 		}
 	}
+
 	private Boolean isValidResponse(String responseData) {
 		// This is because if the KMS server returns a custom error code, it will respond in JSON format.
 		Boolean result = false;
-		try{
+		try {
 			JSONParser jsonParser = new JSONParser();
 			jsonParser.parse(responseData);
-		}catch (Exception e){
+		} catch (Exception e) {
 			result = true;
 		}
 		return result;
 	}
 
-	private ContentPackagingInfo parseResponse(String responseXml) throws CpixClientException{
+	private ContentPackagingInfo parseResponse(String responseXml) throws CpixClientException {
 		try {
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -261,7 +273,7 @@ public class PallyConCpixClient implements CpixClient{
 				drmInfo.setTrackType(trackType);
 				drmInfo.setKeyId(keyId);
 
-				if(contentKeyPeriodList.getLength() > 0) {
+				if (contentKeyPeriodList.getLength() > 0) {
 					Element keyPeriodFilter = (Element) contentKeyUsageRule.getElementsByTagName(
 						"cpix:KeyPeriodFilter").item(0);
 					String periodId = keyPeriodFilter.getAttribute("periodId");
@@ -280,7 +292,8 @@ public class PallyConCpixClient implements CpixClient{
 				Element contentKey = (Element) contentKeyList.item(i);
 				String keyId = contentKey.getAttribute("kid");
 				String explicitIV = contentKey.getAttribute("explicitIV");
-				String keyValue = contentKey.getElementsByTagName("pskc:PlainValue").item(0).getTextContent();
+				String keyValue = contentKey.getElementsByTagName("pskc:PlainValue").item(0)
+					.getTextContent();
 
 				for (MultiDrmInfo drmInfo : multiDrmInfos) {
 					if (drmInfo.getKeyId().equals(keyId)) {
@@ -300,19 +313,25 @@ public class PallyConCpixClient implements CpixClient{
 					if (drmInfo.getKeyId().equals(keyId)) {
 						switch (systemId) {
 							case WIDEVINE_SYSTEM_ID:
-								String psshWidevine = drmSystem.getElementsByTagName("cpix:PSSH").item(0).getTextContent();
-								String contentProtectionDataWidevine = drmSystem.getElementsByTagName("cpix:ContentProtectionData").item(0).getTextContent();
+								String psshWidevine = drmSystem.getElementsByTagName("cpix:PSSH")
+									.item(0).getTextContent();
+								String contentProtectionDataWidevine = drmSystem.getElementsByTagName(
+									"cpix:ContentProtectionData").item(0).getTextContent();
+
 								drmInfo.setWidevinePssh(psshWidevine);
 								drmInfo.setWidevinePsshPayload(contentProtectionDataWidevine);
 								break;
 							case PLAYREADY_SYSTEM_ID:
-								String psshPlayReady = drmSystem.getElementsByTagName("cpix:PSSH").item(0).getTextContent();
-								String contentProtectionDataPlayReady = drmSystem.getElementsByTagName("cpix:ContentProtectionData").item(0).getTextContent();
+								String psshPlayReady = drmSystem.getElementsByTagName("cpix:PSSH")
+									.item(0).getTextContent();
+								String contentProtectionDataPlayReady = drmSystem.getElementsByTagName(
+									"cpix:ContentProtectionData").item(0).getTextContent();
 								drmInfo.setPlayreadyPssh(psshPlayReady);
 								drmInfo.setPlayreadyPsshPayload(contentProtectionDataPlayReady);
 								break;
 							case FAIRPLAY_SYSTEM_ID:
-								Element uriExtXKeyElement = (Element) drmSystem.getElementsByTagName("cpix:URIExtXKey").item(0);
+								Element uriExtXKeyElement = (Element) drmSystem.getElementsByTagName(
+									"cpix:URIExtXKey").item(0);
 								String fairplayHlsKeyUri = uriExtXKeyElement.getTextContent();
 								drmInfo.setFairplayHlsKeyUri(StringUtil.decodeBase64(fairplayHlsKeyUri));
 
@@ -321,15 +340,25 @@ public class PallyConCpixClient implements CpixClient{
 								drmInfo.setFairplayHlsSignalingData(StringUtil.decodeBase64(fairplayHlsSignalingData));
 								break;
 							case NCG_SYSTEM_ID:
-								Element uriExtXKeyElementNCG = (Element) drmSystem.getElementsByTagName("cpix:URIExtXKey").item(0);
+								Element uriExtXKeyElementNCG = (Element) drmSystem.getElementsByTagName(
+									"cpix:URIExtXKey").item(0);
 								String ncgCek = uriExtXKeyElementNCG.getTextContent();
 								drmInfo.setNcgCek(ncgCek);
 								break;
 							case HLS_NCG_SYSTEM_ID:
-								Element uriExtXKeyElementHLSNCG = (Element) drmSystem.getElementsByTagName("cpix:URIExtXKey").item(0);
+								Element uriExtXKeyElementHLSNCG = (Element) drmSystem.getElementsByTagName(
+									"cpix:URIExtXKey").item(0);
 								String ncgHlsKeyUri = uriExtXKeyElementHLSNCG.getTextContent();
 								drmInfo.setNcgHlsKeyUri(StringUtil.decodeBase64(ncgHlsKeyUri));
 								break;
+							case WISEPLAY_SYSTEM_ID:
+								String psshWiseplay = drmSystem.getElementsByTagName("cpix:PSSH")
+									.item(0).getTextContent();
+								String contentProtectionDataWiseplay = drmSystem.getElementsByTagName(
+									"cpix:ContentProtectionData").item(0).getTextContent();
+
+								drmInfo.setWiseplayPssh(psshWiseplay);
+								drmInfo.setWiseplayPsshPayload(contentProtectionDataWiseplay);
 						}
 						break;
 					}

@@ -16,6 +16,8 @@ class MultiDrmInfo:
     fairplay_hls_key_uri: str = ""
     ncg_cek: str = ""
     ncg_hls_key_uri: str = ""
+    wiseplay_pssh: str = ""
+    wiseplay_pssh_payload: str = ""
 
 
 @dataclass

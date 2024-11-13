@@ -14,6 +14,8 @@ public class MultiDrmInfo {
 	private String fairplayHlsKeyUri;
 	private String ncgCek;
 	private String ncgHlsKeyUri;
+	private String wiseplayPssh;
+	private String wiseplayPsshPayload;
 
 	public String getTrackType() {
 		return trackType;
@@ -117,5 +119,21 @@ public class MultiDrmInfo {
 
 	public void setNcgHlsKeyUri(String ncgHlsKeyUri) {
 		this.ncgHlsKeyUri = ncgHlsKeyUri;
+	}
+
+	public String getWiseplayPssh() {
+		return wiseplayPssh;
+	}
+
+	public void setWiseplayPssh(String wiseplayPssh) {
+		this.wiseplayPssh = wiseplayPssh;
+	}
+
+	public String getWiseplayPsshPayload() {
+		return wiseplayPsshPayload;
+	}
+
+	public void setWiseplayPsshPayload(String wiseplayPsshPayload) {
+		this.wiseplayPsshPayload = wiseplayPsshPayload;
 	}
 }
