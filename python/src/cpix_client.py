@@ -123,15 +123,38 @@ def parse_response(response_data):
                     multidrm_info.widevine_pssh = res_drm_system.find("cpix:PSSH", namespaces).text
                     multidrm_info.widevine_pssh_payload \
                         = res_drm_system.find("cpix:ContentProtectionData", namespaces).text
+                    multidrm_info.widevine_hls_signaling_data_master \
+                        = base64.b64decode(
+                        res_drm_system.find("cpix:HLSSignalingData[@playlist='master']", namespaces).text).decode(
+                        'utf-8')
+                    multidrm_info.widevine_hls_signaling_data_media \
+                        = base64.b64decode(
+                        res_drm_system.find("cpix:HLSSignalingData[@playlist='media']", namespaces).text).decode(
+                        'utf-8')
                 elif system_id == _playready_system_id:
                     multidrm_info.playready_pssh = res_drm_system.find("cpix:PSSH", namespaces).text
                     multidrm_info.playready_pssh_payload \
                         = res_drm_system.find("cpix:ContentProtectionData", namespaces).text
+                    multidrm_info.playready_smoothstreaming_data = res_drm_system.find(
+                        "cpix:SmoothStreamingProtectionHeaderData", namespaces).text
+                    multidrm_info.playready_hls_signaling_data_master \
+                        = base64.b64decode(
+                        res_drm_system.find("cpix:HLSSignalingData[@playlist='master']", namespaces).text).decode(
+                        'utf-8')
+                    multidrm_info.playready_hls_signaling_data_media \
+                        = base64.b64decode(
+                        res_drm_system.find("cpix:HLSSignalingData[@playlist='media']", namespaces).text).decode(
+                        'utf-8')
                 elif system_id == _fairplay_system_id:
                     multidrm_info.fairplay_hls_key_uri \
                         = base64.b64decode(res_drm_system.find("cpix:URIExtXKey", namespaces).text).decode('utf-8')
-                    multidrm_info.fairplay_hls_signaling_data \
-                        = base64.b64decode(res_drm_system.find("cpix:HLSSignalingData", namespaces).text).decode(
+                    multidrm_info.fairplay_hls_signaling_data_master \
+                        = base64.b64decode(
+                        res_drm_system.find("cpix:HLSSignalingData[@playlist='master']", namespaces).text).decode(
+                        'utf-8')
+                    multidrm_info.fairplay_hls_signaling_data_media \
+                        = base64.b64decode(
+                        res_drm_system.find("cpix:HLSSignalingData[@playlist='media']", namespaces).text).decode(
                         'utf-8')
                 elif system_id == _ncg_system_id:
                     multidrm_info.ncg_cek = res_drm_system.find("cpix:URIExtXKey", namespaces).text
@@ -142,6 +165,14 @@ def parse_response(response_data):
                     multidrm_info.wiseplay_pssh = res_drm_system.find("cpix:PSSH", namespaces).text
                     multidrm_info.wiseplay_pssh_payload \
                         = res_drm_system.find("cpix:ContentProtectionData", namespaces).text
+                    multidrm_info.wiseplay_hls_signaling_data_master \
+                        = base64.b64decode(
+                        res_drm_system.find("cpix:HLSSignalingData[@playlist='master']", namespaces).text).decode(
+                        'utf-8')
+                    multidrm_info.wiseplay_hls_signaling_data_media \
+                        = base64.b64decode(
+                        res_drm_system.find("cpix:HLSSignalingData[@playlist='media']", namespaces).text).decode(
+                        'utf-8')
 
     pack_info = ContentPackagingInfo(res_root.get("id"))
     pack_info.multidrm_infos = multidrm_infos

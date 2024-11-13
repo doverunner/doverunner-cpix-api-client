@@ -102,14 +102,22 @@ namespace pallycon
 		std::string periodIndex;
 		std::string widevinePSSH;
 		std::string widevinePSSHpayload;
+		std::string widevineHlsSignalingDataMaster;
+		std::string widevineHlsSignalingDataMedia;
 		std::string playreadyPSSH;
 		std::string playreadyPSSHpayload;
-		std::string fairplayHlsSignalingData;
+		std::string playreadySmoothStreamingData;
+		std::string playreadyHlsSignalingDataMaster;
+		std::string playreadyHlsSignalingDataMedia;
 		std::string fairplayHlsKeyUri;
+		std::string fairplayHlsSignalingDataMaster;
+		std::string fairplayHlsSignalingDataMedia;
 		std::string ncgCek;
 		std::string ncgHlsKeyUri;
 		std::string wiseplayPSSH;
 		std::string wiseplayPSSHpayload;
+		std::string wiseplayHlsSignalingDataMaster;
+		std::string wiseplayHlsSignalingDataMedia;
 	};
 
 	struct ContentPackagingInfo

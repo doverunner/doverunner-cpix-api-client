@@ -332,20 +332,26 @@ namespace pallycon {
 			{
 				drmInfo.widevinePSSHpayload = resWidevineNode.getChildNode("cpix:ContentProtectionData").getText();
 				drmInfo.widevinePSSH = resWidevineNode.getChildNode("cpix:PSSH").getText();
+				drmInfo.widevineHlsSignalingDataMaster = resWidevineNode.getChildNodeWithAttribute("cpix:HLSSignalingData", "playlist", "master").getText();
+				drmInfo.widevineHlsSignalingDataMedia = resWidevineNode.getChildNodeWithAttribute("cpix:HLSSignalingData", "playlist", "media").getText();
 			}
 			if (!resPlayReadyNode.isEmpty())
 			{
 				drmInfo.playreadyPSSHpayload = resPlayReadyNode.getChildNode("cpix:ContentProtectionData").getText();
 				drmInfo.playreadyPSSH = resPlayReadyNode.getChildNode("cpix:PSSH").getText();
+				drmInfo.playreadySmoothStreamingData = resPlayReadyNode.getChildNode("cpix:SmoothStreamingProtectionHeaderData").getText();
+				drmInfo.playreadyHlsSignalingDataMaster = resPlayReadyNode.getChildNodeWithAttribute("cpix:HLSSignalingData", "playlist", "master").getText();
+				drmInfo.playreadyHlsSignalingDataMedia = resPlayReadyNode.getChildNodeWithAttribute("cpix:HLSSignalingData", "playlist", "media").getText();
 			}
 
 			if (!resFairPlayNode.isEmpty())
 			{
-				drmInfo.fairplayHlsSignalingData = resFairPlayNode.getChildNode("cpix:HLSSignalingData").getText();
 				int outputLength = 0;
 				std::shared_ptr<BYTE> keyUri = __Base64Decode(resFairPlayNode.getChildNode("cpix:URIExtXKey").getText(), &outputLength);
 				std::string strKeyUri(keyUri.get(), keyUri.get() + outputLength);
 				drmInfo.fairplayHlsKeyUri = strKeyUri;
+				drmInfo.fairplayHlsSignalingDataMaster = resFairPlayNode.getChildNodeWithAttribute("cpix:HLSSignalingData", "playlist", "master").getText();
+				drmInfo.fairplayHlsSignalingDataMedia = resFairPlayNode.getChildNodeWithAttribute("cpix:HLSSignalingData", "playlist", "media").getText();
 			}
 
 			if (!resNcgNode.isEmpty())
@@ -368,6 +374,8 @@ namespace pallycon {
 			{
 				drmInfo.wiseplayPSSHpayload = resWisePlayNode.getChildNode("cpix:ContentProtectionData").getText();
 				drmInfo.wiseplayPSSH = resWisePlayNode.getChildNode("cpix:PSSH").getText();
+				drmInfo.wiseplayHlsSignalingDataMaster = resWisePlayNode.getChildNodeWithAttribute("cpix:HLSSignalingData", "playlist", "master").getText();
+				drmInfo.wiseplayHlsSignalingDataMedia = resWisePlayNode.getChildNodeWithAttribute("cpix:HLSSignalingData", "playlist", "media").getText();
 			}
 
 			packInfo.multiDrmInfos.push_back(drmInfo);

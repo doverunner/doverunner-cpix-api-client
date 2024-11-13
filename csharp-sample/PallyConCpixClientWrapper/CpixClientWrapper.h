@@ -39,14 +39,22 @@ namespace PallyCon {
 		String^ PeriodIndex;
 		String^ WidevinePSSH;
 		String^ WidevinePSSHpayload;
+		String^ WidevineHlsSignalingDataMaster;
+		String^ WidevineHlsSignalingDataMedia;
 		String^ PlayReadyPSSH;
 		String^ PlayReadyPSSHpayload;
-		String^ FairplayHlsSignalingData;
+		String^ PlayReadySmoothStreamingData;
+		String^ PlayReadyHlsSignalingDataMaster;
+		String^ PlayReadyHlsSignalingDataMedia;
 		String^ FairplayHlsKeyUri;
+		String^ FairplayHlsSignalingDataMaster;
+		String^ FairplayHlsSignalingDataMedia;
 		String^ NcgCek;
 		String^ NcgHlsKeyUri;
 		String^ WiseplayPSSH;
 		String^ WiseplayPSSHpayload;
+		String^ WiseplayHlsSignalingDataMaster;
+		String^ WiseplayHlsSignalingDataMedia;	
 	};
 
 	public value struct ContentPackagingInfo {

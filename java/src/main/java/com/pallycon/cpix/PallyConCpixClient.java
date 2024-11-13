@@ -311,6 +311,24 @@ public class PallyConCpixClient implements CpixClient {
 
 				for (MultiDrmInfo drmInfo : multiDrmInfos) {
 					if (drmInfo.getKeyId().equals(keyId)) {
+						Element hlsSignalingDataMasterElement = null;
+						Element hlsSignalingDataMediaElement = null;
+						if (!systemId.equals(NCG_SYSTEM_ID)
+							&& !systemId.equals(HLS_NCG_SYSTEM_ID)) {
+							NodeList hlsSignalingDataNodes = drmSystem.getElementsByTagName(
+								"cpix:HLSSignalingData");
+
+							for (int j = 0; j < hlsSignalingDataNodes.getLength(); j++) {
+								Element element = (Element) hlsSignalingDataNodes.item(j);
+								if ("master".equals(element.getAttribute("playlist"))) {
+									hlsSignalingDataMasterElement = element;
+								}
+								if ("media".equals(element.getAttribute("playlist"))) {
+									hlsSignalingDataMediaElement = element;
+								}
+							}
+						}
+
 						switch (systemId) {
 							case WIDEVINE_SYSTEM_ID:
 								String psshWidevine = drmSystem.getElementsByTagName("cpix:PSSH")
@@ -320,24 +338,58 @@ public class PallyConCpixClient implements CpixClient {
 
 								drmInfo.setWidevinePssh(psshWidevine);
 								drmInfo.setWidevinePsshPayload(contentProtectionDataWidevine);
+								if(hlsSignalingDataMasterElement != null) {
+									drmInfo.setWidevineHlsSignalingDataMaster(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMasterElement.getTextContent()));
+								}
+								if(hlsSignalingDataMediaElement != null) {
+									drmInfo.setWidevineHlsSignalingDataMedia(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMediaElement.getTextContent()));
+								}
 								break;
 							case PLAYREADY_SYSTEM_ID:
 								String psshPlayReady = drmSystem.getElementsByTagName("cpix:PSSH")
 									.item(0).getTextContent();
 								String contentProtectionDataPlayReady = drmSystem.getElementsByTagName(
 									"cpix:ContentProtectionData").item(0).getTextContent();
+								String smoothStreamingDataPlayReady = drmSystem.getElementsByTagName(
+										"cpix:SmoothStreamingProtectionHeaderData").item(0)
+									.getTextContent();
+
 								drmInfo.setPlayreadyPssh(psshPlayReady);
 								drmInfo.setPlayreadyPsshPayload(contentProtectionDataPlayReady);
+								drmInfo.setPlayreadySmoothStreamingData(
+									smoothStreamingDataPlayReady);
+								if(hlsSignalingDataMasterElement != null) {
+									drmInfo.setPlayreadyHlsSignalingDataMaster(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMasterElement.getTextContent()));
+								}
+								if(hlsSignalingDataMediaElement != null) {
+									drmInfo.setPlayreadyHlsSignalingDataMedia(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMediaElement.getTextContent()));
+								}
 								break;
 							case FAIRPLAY_SYSTEM_ID:
 								Element uriExtXKeyElement = (Element) drmSystem.getElementsByTagName(
 									"cpix:URIExtXKey").item(0);
 								String fairplayHlsKeyUri = uriExtXKeyElement.getTextContent();
-								drmInfo.setFairplayHlsKeyUri(StringUtil.decodeBase64(fairplayHlsKeyUri));
 
-								Element hlsSignalingDataElement = (Element) drmSystem.getElementsByTagName("cpix:HLSSignalingData").item(0);
-								String fairplayHlsSignalingData = hlsSignalingDataElement.getTextContent();
-								drmInfo.setFairplayHlsSignalingData(StringUtil.decodeBase64(fairplayHlsSignalingData));
+								drmInfo.setFairplayHlsKeyUri(
+									StringUtil.decodeBase64(fairplayHlsKeyUri));
+								if(hlsSignalingDataMasterElement != null) {
+									drmInfo.setFairplayHlsSignalingDataMaster(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMasterElement.getTextContent()));
+								}
+								if(hlsSignalingDataMediaElement != null) {
+									drmInfo.setFairplayHlsSignalingDataMedia(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMediaElement.getTextContent()));
+								}
 								break;
 							case NCG_SYSTEM_ID:
 								Element uriExtXKeyElementNCG = (Element) drmSystem.getElementsByTagName(
@@ -359,6 +411,17 @@ public class PallyConCpixClient implements CpixClient {
 
 								drmInfo.setWiseplayPssh(psshWiseplay);
 								drmInfo.setWiseplayPsshPayload(contentProtectionDataWiseplay);
+								if(hlsSignalingDataMasterElement != null) {
+									drmInfo.setWiseplayHlsSignalingDataMaster(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMasterElement.getTextContent()));
+								}
+								if(hlsSignalingDataMediaElement != null) {
+									drmInfo.setWiseplayHlsSignalingDataMedia(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMediaElement.getTextContent()));
+								}
+								break;
 						}
 						break;
 					}

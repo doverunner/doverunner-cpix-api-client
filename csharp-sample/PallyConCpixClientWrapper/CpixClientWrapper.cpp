@@ -50,14 +50,22 @@ namespace PallyCon {
 				drmInfo.PeriodIndex = gcnew String(multiDrmInfo.periodIndex.c_str());
 				drmInfo.WidevinePSSH = gcnew String(multiDrmInfo.widevinePSSH.c_str());
 				drmInfo.WidevinePSSHpayload = gcnew String(multiDrmInfo.widevinePSSHpayload.c_str());
+				drmInfo.WidevineHlsSignalingDataMaster = gcnew String(multiDrmInfo.widevineHlsSignalingDataMaster.c_str());
+				drmInfo.WidevineHlsSignalingDataMedia = gcnew String(multiDrmInfo.widevineHlsSignalingDataMedia.c_str());
 				drmInfo.PlayReadyPSSH = gcnew String(multiDrmInfo.playreadyPSSH.c_str());
 				drmInfo.PlayReadyPSSHpayload = gcnew String(multiDrmInfo.playreadyPSSHpayload.c_str());
-				drmInfo.FairplayHlsSignalingData = gcnew String(multiDrmInfo.fairplayHlsSignalingData.c_str());
+				drmInfo.PlayReadySmoothStreamingData = gcnew String(multiDrmInfo.playreadySmoothStreamingData.c_str());
+				drmInfo.PlayReadyHlsSignalingDataMaster = gcnew String(multiDrmInfo.playreadyHlsSignalingDataMaster.c_str());
+				drmInfo.PlayReadyHlsSignalingDataMedia = gcnew String(multiDrmInfo.playreadyHlsSignalingDataMedia.c_str());
 				drmInfo.FairplayHlsKeyUri = gcnew String(multiDrmInfo.fairplayHlsKeyUri.c_str());
+				drmInfo.FairplayHlsSignalingDataMaster = gcnew String(multiDrmInfo.fairplayHlsSignalingDataMaster.c_str());
+				drmInfo.FairplayHlsSignalingDataMedia = gcnew String(multiDrmInfo.fairplayHlsSignalingDataMedia.c_str());
 				drmInfo.NcgCek = gcnew String(multiDrmInfo.ncgCek.c_str());
 				drmInfo.NcgHlsKeyUri = gcnew String(multiDrmInfo.ncgHlsKeyUri.c_str());
 				drmInfo.WiseplayPSSH = gcnew String(multiDrmInfo.wiseplayPSSH.c_str());
 				drmInfo.WiseplayPSSHpayload = gcnew String(multiDrmInfo.wiseplayPSSHpayload.c_str());
+				drmInfo.WiseplayHlsSignalingDataMaster = gcnew String(multiDrmInfo.wiseplayHlsSignalingDataMaster.c_str());
+				drmInfo.WiseplayHlsSignalingDataMedia = gcnew String(multiDrmInfo.wiseplayHlsSignalingDataMedia.c_str());
 
 				packInfos.DrmInfos->Add(drmInfo);
 			}

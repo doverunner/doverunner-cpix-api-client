@@ -1,6 +1,7 @@
 package com.pallycon.cpix.dto;
 
 public class MultiDrmInfo {
+
 	private String trackType;
 	private String key;
 	private String keyId;
@@ -8,14 +9,22 @@ public class MultiDrmInfo {
 	private String periodIndex;
 	private String widevinePssh;
 	private String widevinePsshPayload;
+	private String widevineHlsSignalingDataMaster;
+	private String widevineHlsSignalingDataMedia;
 	private String playreadyPssh;
 	private String playreadyPsshPayload;
-	private String fairplayHlsSignalingData;
+	private String playreadySmoothStreamingData;
+	private String playreadyHlsSignalingDataMaster;
+	private String playreadyHlsSignalingDataMedia;
 	private String fairplayHlsKeyUri;
+	private String fairplayHlsSignalingDataMaster;
+	private String fairplayHlsSignalingDataMedia;
 	private String ncgCek;
 	private String ncgHlsKeyUri;
 	private String wiseplayPssh;
 	private String wiseplayPsshPayload;
+	private String wiseplayHlsSignalingDataMaster;
+	private String wiseplayHlsSignalingDataMedia;
 
 	public String getTrackType() {
 		return trackType;
@@ -73,6 +82,22 @@ public class MultiDrmInfo {
 		this.widevinePsshPayload = widevinePsshPayload;
 	}
 
+	public String getWidevineHlsSignalingDataMaster() {
+		return widevineHlsSignalingDataMaster;
+	}
+
+	public void setWidevineHlsSignalingDataMaster(String widevineHlsSignalingDataMaster) {
+		this.widevineHlsSignalingDataMaster = widevineHlsSignalingDataMaster;
+	}
+
+	public String getWidevineHlsSignalingDataMedia() {
+		return widevineHlsSignalingDataMedia;
+	}
+
+	public void setWidevineHlsSignalingDataMedia(String widevineHlsSignalingDataMedia) {
+		this.widevineHlsSignalingDataMedia = widevineHlsSignalingDataMedia;
+	}
+
 	public String getPlayreadyPssh() {
 		return playreadyPssh;
 	}
@@ -89,12 +114,28 @@ public class MultiDrmInfo {
 		this.playreadyPsshPayload = playreadyPsshPayload;
 	}
 
-	public String getFairplayHlsSignalingData() {
-		return fairplayHlsSignalingData;
+	public String getPlayreadySmoothStreamingData() {
+		return playreadySmoothStreamingData;
 	}
 
-	public void setFairplayHlsSignalingData(String fairplayHlsSignalingData) {
-		this.fairplayHlsSignalingData = fairplayHlsSignalingData;
+	public void setPlayreadySmoothStreamingData(String playreadySmoothStreamingData) {
+		this.playreadySmoothStreamingData = playreadySmoothStreamingData;
+	}
+
+	public String getPlayreadyHlsSignalingDataMaster() {
+		return playreadyHlsSignalingDataMaster;
+	}
+
+	public void setPlayreadyHlsSignalingDataMaster(String playreadyHlsSignalingDataMaster) {
+		this.playreadyHlsSignalingDataMaster = playreadyHlsSignalingDataMaster;
+	}
+
+	public String getPlayreadyHlsSignalingDataMedia() {
+		return playreadyHlsSignalingDataMedia;
+	}
+
+	public void setPlayreadyHlsSignalingDataMedia(String playreadyHlsSignalingDataMedia) {
+		this.playreadyHlsSignalingDataMedia = playreadyHlsSignalingDataMedia;
 	}
 
 	public String getFairplayHlsKeyUri() {
@@ -103,6 +144,22 @@ public class MultiDrmInfo {
 
 	public void setFairplayHlsKeyUri(String fairplayHlsKeyUri) {
 		this.fairplayHlsKeyUri = fairplayHlsKeyUri;
+	}
+
+	public String getFairplayHlsSignalingDataMaster() {
+		return fairplayHlsSignalingDataMaster;
+	}
+
+	public void setFairplayHlsSignalingDataMaster(String fairplayHlsSignalingDataMaster) {
+		this.fairplayHlsSignalingDataMaster = fairplayHlsSignalingDataMaster;
+	}
+
+	public String getFairplayHlsSignalingDataMedia() {
+		return fairplayHlsSignalingDataMedia;
+	}
+
+	public void setFairplayHlsSignalingDataMedia(String fairplayHlsSignalingDataMedia) {
+		this.fairplayHlsSignalingDataMedia = fairplayHlsSignalingDataMedia;
 	}
 
 	public String getNcgCek() {
@@ -135,5 +192,21 @@ public class MultiDrmInfo {
 
 	public void setWiseplayPsshPayload(String wiseplayPsshPayload) {
 		this.wiseplayPsshPayload = wiseplayPsshPayload;
+	}
+
+	public String getWiseplayHlsSignalingDataMaster() {
+		return wiseplayHlsSignalingDataMaster;
+	}
+
+	public void setWiseplayHlsSignalingDataMaster(String wiseplayHlsSignalingDataMaster) {
+		this.wiseplayHlsSignalingDataMaster = wiseplayHlsSignalingDataMaster;
+	}
+
+	public String getWiseplayHlsSignalingDataMedia() {
+		return wiseplayHlsSignalingDataMedia;
+	}
+
+	public void setWiseplayHlsSignalingDataMedia(String wiseplayHlsSignalingDataMedia) {
+		this.wiseplayHlsSignalingDataMedia = wiseplayHlsSignalingDataMedia;
 	}
 }
