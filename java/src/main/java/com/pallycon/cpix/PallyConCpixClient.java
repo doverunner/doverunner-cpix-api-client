@@ -38,9 +38,12 @@ public class PallyConCpixClient implements CpixClient {
 	private static final String WIDEVINE_SYSTEM_ID = "EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED";
 	private static final String PLAYREADY_SYSTEM_ID = "9A04F079-9840-4286-AB92-E65BE0885F95";
 	private static final String FAIRPLAY_SYSTEM_ID = "94CE86FB-07FF-4F43-ADB8-93D2FA968CA2";
-	private static final String NCG_SYSTEM_ID = "D9E4411A-E886-4909-A380-A77F28D52335";
-	private static final String HLS_NCG_SYSTEM_ID = "48582A1D-1FF4-426E-8CD5-06424FCC578C";
 	private static final String WISEPLAY_SYSTEM_ID = "3D5E6D35-9B9A-41E8-B843-DD3C6E72C42C";
+	private static final String NCG_SYSTEM_ID = "D9E4411A-E886-4909-A380-A77F28D52335";
+	private static final String NCGHLS_AES128_SYSTEM_ID = "81376844-F976-481E-A84E-CC25D39B0B33";
+	private static final String NCGHLS_SAMPLEAES_SYSTEM_ID = "48582A1D-1FF4-426E-8CD5-06424FCC578C";
+	private static final String AES128_SYSTEM_ID = "3EA8778F-7742-4BF9-B18B-E834B2ACBD47";
+	private static final String SAMPLEAES_SYSTEM_ID = "BE58615B-19C4-4684-88B3-C8C57E99E957";
 
 	private String kmsUrl;
 
@@ -116,8 +119,10 @@ public class PallyConCpixClient implements CpixClient {
 			for (TrackType track : keyMap.keySet()) {
 				Element reqContentKey = doc.createElement("cpix:ContentKey");
 				reqContentKey.setAttribute("kid", keyMap.get(track));
-				reqContentKey.setAttribute("commonEncryptionScheme",
-					encryptionScheme.name().toLowerCase());
+				if(encryptionScheme != EncryptionScheme.NONE) {
+					reqContentKey.setAttribute("commonEncryptionScheme",
+						encryptionScheme.name().toLowerCase());
+				}
 				reqContentKeyList.appendChild(reqContentKey);
 
 				String keyPeriodId = "keyPeriod_" + UUID.randomUUID().toString();
@@ -148,14 +153,24 @@ public class PallyConCpixClient implements CpixClient {
 						case FAIRPLAY:
 							systemId = FAIRPLAY_SYSTEM_ID;
 							break;
+						case WISEPLAY:
+							systemId = WISEPLAY_SYSTEM_ID;
+							break;
 						case NCG:
 							systemId = NCG_SYSTEM_ID;
 							break;
-						case HLS_NCG:
-							systemId = HLS_NCG_SYSTEM_ID;
+						case NCGHLS_AES128:
+							systemId = NCGHLS_AES128_SYSTEM_ID;
 							break;
-						case WISEPLAY:
-							systemId = WISEPLAY_SYSTEM_ID;
+						case NCGHLS_SAMPLEAES:
+							systemId = NCGHLS_SAMPLEAES_SYSTEM_ID;
+							break;
+						case AES128:
+							systemId = AES128_SYSTEM_ID;
+							break;
+						case SAMPLEAES:
+							systemId = SAMPLEAES_SYSTEM_ID;
+							break;
 					}
 
 					if (systemId != null) {
@@ -299,7 +314,6 @@ public class PallyConCpixClient implements CpixClient {
 					if (drmInfo.getKeyId().equals(keyId)) {
 						drmInfo.setIv(explicitIV);
 						drmInfo.setKey(keyValue);
-						break;
 					}
 				}
 			}
@@ -313,8 +327,7 @@ public class PallyConCpixClient implements CpixClient {
 					if (drmInfo.getKeyId().equals(keyId)) {
 						Element hlsSignalingDataMasterElement = null;
 						Element hlsSignalingDataMediaElement = null;
-						if (!systemId.equals(NCG_SYSTEM_ID)
-							&& !systemId.equals(HLS_NCG_SYSTEM_ID)) {
+						if (!systemId.equals(NCG_SYSTEM_ID)) {
 							NodeList hlsSignalingDataNodes = drmSystem.getElementsByTagName(
 								"cpix:HLSSignalingData");
 
@@ -391,18 +404,6 @@ public class PallyConCpixClient implements CpixClient {
 											hlsSignalingDataMediaElement.getTextContent()));
 								}
 								break;
-							case NCG_SYSTEM_ID:
-								Element uriExtXKeyElementNCG = (Element) drmSystem.getElementsByTagName(
-									"cpix:URIExtXKey").item(0);
-								String ncgCek = uriExtXKeyElementNCG.getTextContent();
-								drmInfo.setNcgCek(ncgCek);
-								break;
-							case HLS_NCG_SYSTEM_ID:
-								Element uriExtXKeyElementHLSNCG = (Element) drmSystem.getElementsByTagName(
-									"cpix:URIExtXKey").item(0);
-								String ncgHlsKeyUri = uriExtXKeyElementHLSNCG.getTextContent();
-								drmInfo.setNcgHlsKeyUri(StringUtil.decodeBase64(ncgHlsKeyUri));
-								break;
 							case WISEPLAY_SYSTEM_ID:
 								String psshWiseplay = drmSystem.getElementsByTagName("cpix:PSSH")
 									.item(0).getTextContent();
@@ -422,8 +423,83 @@ public class PallyConCpixClient implements CpixClient {
 											hlsSignalingDataMediaElement.getTextContent()));
 								}
 								break;
+							case NCG_SYSTEM_ID:
+								Element uriExtXKeyElementNCG = (Element) drmSystem.getElementsByTagName(
+									"cpix:URIExtXKey").item(0);
+								String ncgCek = uriExtXKeyElementNCG.getTextContent();
+								drmInfo.setNcgCek(ncgCek);
+								break;
+							case NCGHLS_AES128_SYSTEM_ID:
+								Element uriExtXKeyElementNcgHlsAes128 = (Element) drmSystem.getElementsByTagName(
+									"cpix:URIExtXKey").item(0);
+								String ncgHlsKeyUri = uriExtXKeyElementNcgHlsAes128.getTextContent();
+								drmInfo.setNcghlsAes128KeyUri(StringUtil.decodeBase64(ncgHlsKeyUri));
+								if(hlsSignalingDataMasterElement != null) {
+									drmInfo.setNcghlsAes128HlsSignalingDataMaster(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMasterElement.getTextContent()));
+								}
+								if(hlsSignalingDataMediaElement != null) {
+									drmInfo.setNcghlsAes128HlsSignalingDataMedia(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMediaElement.getTextContent()));
+								}
+								break;
+							case NCGHLS_SAMPLEAES_SYSTEM_ID:
+								Element uriExtXKeyElementNcgHlsSampleAes = (Element) drmSystem
+									.getElementsByTagName("cpix:URIExtXKey").item(0);
+								String ncgHlsSampleAesKeyUri = uriExtXKeyElementNcgHlsSampleAes
+									.getTextContent();
+								drmInfo.setNcghlsSampleAesKeyUri(
+									StringUtil.decodeBase64(ncgHlsSampleAesKeyUri));
+								if(hlsSignalingDataMasterElement != null) {
+									drmInfo.setNcghlsSampleAesHlsSignalingDataMaster(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMasterElement.getTextContent()));
+								}
+								if(hlsSignalingDataMediaElement != null) {
+									drmInfo.setNcghlsSampleAesHlsSignalingDataMedia(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMediaElement.getTextContent()));
+								}
+								break;
+							case AES128_SYSTEM_ID:
+								Element uriExtXKeyElementAes128 = (Element) drmSystem
+									.getElementsByTagName("cpix:URIExtXKey").item(0);
+								String aes128KeyUri = uriExtXKeyElementAes128
+									.getTextContent();
+								drmInfo.setAes128KeyUri(
+									StringUtil.decodeBase64(aes128KeyUri));
+								if(hlsSignalingDataMasterElement != null) {
+									drmInfo.setAes128HlsSignalingDataMaster(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMasterElement.getTextContent()));
+								}
+								if(hlsSignalingDataMediaElement != null) {
+									drmInfo.setAes128HlsSignalingDataMedia(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMediaElement.getTextContent()));
+								}
+								break;
+							case SAMPLEAES_SYSTEM_ID:
+								Element uriExtXKeyElementSampleAes = (Element) drmSystem
+									.getElementsByTagName("cpix:URIExtXKey").item(0);
+								String sampleAesKeyUri = uriExtXKeyElementSampleAes
+									.getTextContent();
+								drmInfo.setSampleAesKeyUri(
+									StringUtil.decodeBase64(sampleAesKeyUri));
+								if(hlsSignalingDataMasterElement != null) {
+									drmInfo.setSampleAesHlsSignalingDataMaster(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMasterElement.getTextContent()));
+								}
+								if(hlsSignalingDataMediaElement != null) {
+									drmInfo.setSampleAesHlsSignalingDataMedia(
+										StringUtil.decodeBase64(
+											hlsSignalingDataMediaElement.getTextContent()));
+								}
+								break;
 						}
-						break;
 					}
 				}
 			}

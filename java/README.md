@@ -26,31 +26,36 @@ ContentPackagingInfo GetContentKeyInfoFromPallyConKMS(String contentId, EnumSet<
 
 ```java
 public enum DrmType {
-	WIDEVINE,
-	PLAYREADY,
-	FAIRPLAY,
-	NCG,
-	HLS_NCG
+  WIDEVINE,
+  PLAYREADY,
+  FAIRPLAY,
+  WISEPLAY,
+  NCG,
+  NCGHLS_AES128,
+  NCGHLS_SAMPLEAES,
+  AES128,
+  SAMPLEAES
 }
 ```
 
 ```java
 public enum EncryptionScheme {
-	CENC,
-	CBC1,
-	CENS,
-	CBCS
+  NONE,
+  CENC,
+  CBC1,
+  CENS,
+  CBCS
 }
 ```
 
 ```java
 public enum TrackType {
-	ALL_TRACKS,
-	AUDIO,
-	SD,
-	HD,
-	UHD1,
-	UHD2
+  ALL_TRACKS,
+  AUDIO,
+  SD,
+  HD,
+  UHD1,
+  UHD2
 }
 ```
 
@@ -60,7 +65,7 @@ If you want to enable key rotation, you can set `key-rotation=true` to the Get p
 
 
 
-> NOTE : NCG and HLS_NCG types are only support single-key.
+> NOTE : NCG and clear-key types are supported for single-key only.
 
 
 

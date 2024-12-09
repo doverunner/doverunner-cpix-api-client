@@ -42,7 +42,7 @@ class CpixClientTest {
 		String contentId = ""; // Put your content id
 		EnumSet<DrmType> drmTypes = EnumSet.of(DrmType.WIDEVINE, DrmType.PLAYREADY,
 			DrmType.FAIRPLAY);
-		EncryptionScheme encryptionScheme = EncryptionScheme.CENC;
+		EncryptionScheme encryptionScheme = EncryptionScheme.NONE;
 		EnumSet<TrackType> trackTypes = EnumSet.of(TrackType.HD, TrackType.SD, TrackType.AUDIO);
 
 		ContentPackagingInfo packagingInfo = cpixClient.GetContentKeyInfoFromPallyConKMS(contentId,

@@ -7,6 +7,7 @@ using namespace System::Collections::Generic;
 
 namespace PallyCon {
 	public enum class EncryptionScheme {
+		NONE,
 		CENC,
 		CBC1,
 		CENS,
@@ -17,9 +18,12 @@ namespace PallyCon {
 		WIDEVINE = (1 << 0),
 		PLAYREADY = (1 << 1),
 		FAIRPLAY = (1 << 2),
-		NCG = (1 << 3),
-		HLS_NCG = (1 << 4),
-		WISEPLAY = (1 << 5),
+		WISEPLAY = (1 << 3),
+		NCG = (1 << 4),
+		NCGHLS_AES128 = (1 << 5),
+		NCGHLS_SAMPLEAES = (1 << 6),
+		AES128 = (1 << 7),
+		SAMPLEAES = (1 << 8)
 	};
 
 	public enum class TrackType {
@@ -41,20 +45,31 @@ namespace PallyCon {
 		String^ WidevinePSSHpayload;
 		String^ WidevineHlsSignalingDataMaster;
 		String^ WidevineHlsSignalingDataMedia;
-		String^ PlayReadyPSSH;
-		String^ PlayReadyPSSHpayload;
-		String^ PlayReadySmoothStreamingData;
-		String^ PlayReadyHlsSignalingDataMaster;
-		String^ PlayReadyHlsSignalingDataMedia;
+		String^ PlayreadyPSSH;
+		String^ PlayreadyPSSHpayload;
+		String^ PlayreadySmoothStreamingData;
+		String^ PlayreadyHlsSignalingDataMaster;
+		String^ PlayreadyHlsSignalingDataMedia;
 		String^ FairplayHlsKeyUri;
 		String^ FairplayHlsSignalingDataMaster;
 		String^ FairplayHlsSignalingDataMedia;
-		String^ NcgCek;
-		String^ NcgHlsKeyUri;
 		String^ WiseplayPSSH;
 		String^ WiseplayPSSHpayload;
 		String^ WiseplayHlsSignalingDataMaster;
-		String^ WiseplayHlsSignalingDataMedia;	
+		String^ WiseplayHlsSignalingDataMedia;
+		String^ NcgCek;
+		String^ NcghlsAes128KeyUri;
+		String^ NcghlsAes128HlsSignalingDataMaster;
+		String^ NcghlsAes128HlsSignalingDataMedia;
+		String^ NcghlsSampleAesKeyUri;
+		String^ NcghlsSampleAesHlsSignalingDataMaster;
+		String^ NcghlsSampleAesHlsSignalingDataMedia;
+		String^ Aes128KeyUri;
+		String^ Aes128HlsSignalingDataMaster;
+		String^ Aes128HlsSignalingDataMedia;
+		String^ SampleAesKeyUri;
+		String^ SampleAesHlsSignalingDataMaster;
+		String^ SampleAesHlsSignalingDataMedia;
 	};
 
 	public value struct ContentPackagingInfo {

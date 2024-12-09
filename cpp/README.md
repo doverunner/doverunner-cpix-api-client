@@ -50,27 +50,32 @@ If you want to enable key rotation, you can set `key-rotation=true` to the Get p
 
 ```c++
 enum EncryptionScheme {
-		CENC,
-		CBC1,
-		CENS,
-		CBCS
-	};
-	
+    NONE,
+    CENC,
+    CBC1,
+    CENS,
+    CBCS
+};
+
 enum DrmType {
-	WIDEVINE = (1 << 0),	// 0000 0001 // 0x01
-	PLAYREADY = (1 << 1),	// 0000 0010 // 0x02
-	FAIRPLAY = (1 << 2),	// 0000 0100 // 0x04
-	NCG = (1 << 3),			// 0000 1000 // 0x08
-	HLS_NCG = (1 << 4),		// 0001 0000 // 0x10
+    WIDEVINE = (1 << 0),
+    PLAYREADY = (1 << 1),
+    FAIRPLAY = (1 << 2),
+    WISEPLAY = (1 << 3),
+    NCG = (1 << 4),
+    NCGHLS_AES128 = (1 << 5),
+    NCGHLS_SAMPLEAES = (1 << 6),
+    AES128 = (1 << 7),
+    SAMPLEAES = (1 << 8)
 };
 
 enum TrackType {
-	ALL_TRACKS,
-	AUDIO = (1 << 0),
-	SD = (1 << 1),
-	HD = (1 << 2),
-	UHD1 = (1 << 3),
-	UHD2 = (1 << 4)
+    ALL_TRACKS,
+    AUDIO = (1 << 0),
+    SD = (1 << 1),
+    HD = (1 << 2),
+    UHD1 = (1 << 3),
+    UHD2 = (1 << 4)
 };
 ```
 
@@ -78,7 +83,7 @@ enum TrackType {
 
 
 
-> NOTE : NCG and HLS_NCG types are only support single-key.
+> NOTE : NCG and clear-key types are supported for single-key only.
 
 
 

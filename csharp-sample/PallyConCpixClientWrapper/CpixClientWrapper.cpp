@@ -52,20 +52,31 @@ namespace PallyCon {
 				drmInfo.WidevinePSSHpayload = gcnew String(multiDrmInfo.widevinePSSHpayload.c_str());
 				drmInfo.WidevineHlsSignalingDataMaster = gcnew String(multiDrmInfo.widevineHlsSignalingDataMaster.c_str());
 				drmInfo.WidevineHlsSignalingDataMedia = gcnew String(multiDrmInfo.widevineHlsSignalingDataMedia.c_str());
-				drmInfo.PlayReadyPSSH = gcnew String(multiDrmInfo.playreadyPSSH.c_str());
-				drmInfo.PlayReadyPSSHpayload = gcnew String(multiDrmInfo.playreadyPSSHpayload.c_str());
-				drmInfo.PlayReadySmoothStreamingData = gcnew String(multiDrmInfo.playreadySmoothStreamingData.c_str());
-				drmInfo.PlayReadyHlsSignalingDataMaster = gcnew String(multiDrmInfo.playreadyHlsSignalingDataMaster.c_str());
-				drmInfo.PlayReadyHlsSignalingDataMedia = gcnew String(multiDrmInfo.playreadyHlsSignalingDataMedia.c_str());
+				drmInfo.PlayreadyPSSH = gcnew String(multiDrmInfo.playreadyPSSH.c_str());
+				drmInfo.PlayreadyPSSHpayload = gcnew String(multiDrmInfo.playreadyPSSHpayload.c_str());
+				drmInfo.PlayreadySmoothStreamingData = gcnew String(multiDrmInfo.playreadySmoothStreamingData.c_str());
+				drmInfo.PlayreadyHlsSignalingDataMaster = gcnew String(multiDrmInfo.playreadyHlsSignalingDataMaster.c_str());
+				drmInfo.PlayreadyHlsSignalingDataMedia = gcnew String(multiDrmInfo.playreadyHlsSignalingDataMedia.c_str());
 				drmInfo.FairplayHlsKeyUri = gcnew String(multiDrmInfo.fairplayHlsKeyUri.c_str());
 				drmInfo.FairplayHlsSignalingDataMaster = gcnew String(multiDrmInfo.fairplayHlsSignalingDataMaster.c_str());
 				drmInfo.FairplayHlsSignalingDataMedia = gcnew String(multiDrmInfo.fairplayHlsSignalingDataMedia.c_str());
-				drmInfo.NcgCek = gcnew String(multiDrmInfo.ncgCek.c_str());
-				drmInfo.NcgHlsKeyUri = gcnew String(multiDrmInfo.ncgHlsKeyUri.c_str());
 				drmInfo.WiseplayPSSH = gcnew String(multiDrmInfo.wiseplayPSSH.c_str());
 				drmInfo.WiseplayPSSHpayload = gcnew String(multiDrmInfo.wiseplayPSSHpayload.c_str());
 				drmInfo.WiseplayHlsSignalingDataMaster = gcnew String(multiDrmInfo.wiseplayHlsSignalingDataMaster.c_str());
 				drmInfo.WiseplayHlsSignalingDataMedia = gcnew String(multiDrmInfo.wiseplayHlsSignalingDataMedia.c_str());
+				drmInfo.NcgCek = gcnew String(multiDrmInfo.ncgCek.c_str());
+				drmInfo.NcghlsAes128KeyUri = gcnew String(multiDrmInfo.ncghlsAes128KeyUri.c_str());
+				drmInfo.NcghlsAes128HlsSignalingDataMaster = gcnew String(multiDrmInfo.ncghlsAes128HlsSignalingDataMaster.c_str());
+				drmInfo.NcghlsAes128HlsSignalingDataMedia = gcnew String(multiDrmInfo.ncghlsAes128HlsSignalingDataMedia.c_str());
+				drmInfo.NcghlsSampleAesKeyUri = gcnew String(multiDrmInfo.ncghlsSampleAesKeyUri.c_str());
+				drmInfo.NcghlsSampleAesHlsSignalingDataMaster = gcnew String(multiDrmInfo.ncghlsSampleAesHlsSignalingDataMaster.c_str());
+				drmInfo.NcghlsSampleAesHlsSignalingDataMedia = gcnew String(multiDrmInfo.ncghlsSampleAesHlsSignalingDataMedia.c_str());
+				drmInfo.Aes128KeyUri = gcnew String(multiDrmInfo.aes128KeyUri.c_str());
+				drmInfo.Aes128HlsSignalingDataMaster = gcnew String(multiDrmInfo.aes128HlsSignalingDataMaster.c_str());
+				drmInfo.Aes128HlsSignalingDataMedia = gcnew String(multiDrmInfo.aes128HlsSignalingDataMedia.c_str());
+				drmInfo.SampleAesKeyUri = gcnew String(multiDrmInfo.sampleAesKeyUri.c_str());
+				drmInfo.SampleAesHlsSignalingDataMaster = gcnew String(multiDrmInfo.sampleAesHlsSignalingDataMaster.c_str());
+				drmInfo.SampleAesHlsSignalingDataMedia = gcnew String(multiDrmInfo.sampleAesHlsSignalingDataMedia.c_str());
 
 				packInfos.DrmInfos->Add(drmInfo);
 			}
