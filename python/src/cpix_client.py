@@ -12,9 +12,12 @@ from exceptions import CpixClientError
 _widevine_system_id = "EDEF8BA9-79D6-4ACE-A3C8-27DCD51D21ED"
 _playready_system_id = "9A04F079-9840-4286-AB92-E65BE0885F95"
 _fairplay_system_id = "94CE86FB-07FF-4F43-ADB8-93D2FA968CA2"
+_wiseplay_system_id = "3D5E6D35-9B9A-41E8-B843-DD3C6E72C42C"
 _ncg_system_id = "D9E4411A-E886-4909-A380-A77F28D52335"
-_hls_ncg_system_id = "48582A1D-1FF4-426E-8CD5-06424FCC578C"
-
+_ncghls_aes128_system_id = "81376844-F976-481E-A84E-CC25D39B0B33"
+_ncghls_sampleaes_system_id = "48582A1D-1FF4-426E-8CD5-06424FCC578C"
+_aes128_system_id = "3EA8778F-7742-4BF9-B18B-E834B2ACBD47"
+_sampleaes_system_id = "BE58615B-19C4-4684-88B3-C8C57E99E957"
 
 def get_request_data(content_id, drm_type, encryption_scheme, track_type, period_index):
     # Setting the key map
@@ -47,8 +50,11 @@ def get_request_data(content_id, drm_type, encryption_scheme, track_type, period
         req_content_key_period_list = SubElement(req_root, "cpix:ContentKeyPeriodList")
 
     for track in key_map:
-        SubElement(req_content_key_list, "cpix:ContentKey",
-                   {"kid": key_map[track], "commonEncryptionScheme": encryption_scheme.name.lower()})
+        content_key_attributes = {"kid": key_map[track]}
+        if encryption_scheme != EncryptionScheme.NONE:
+            content_key_attributes["commonEncryptionScheme"] = encryption_scheme.name.lower()
+
+        SubElement(req_content_key_list, "cpix:ContentKey", content_key_attributes)
         req_content_key_usage_rule = SubElement(req_content_key_usage_rule_list, "cpix:ContentKeyUsageRule",
                                                 {"intendedTrackType": track, "kid": key_map[track]})
 
@@ -64,10 +70,18 @@ def get_request_data(content_id, drm_type, encryption_scheme, track_type, period
             SubElement(req_drm_system_list, "cpix:DRMSystem", {"kid": key_map[track], "systemId": _playready_system_id})
         if DrmType.FAIRPLAY in drm_type:
             SubElement(req_drm_system_list, "cpix:DRMSystem", {"kid": key_map[track], "systemId": _fairplay_system_id})
+        if DrmType.WISEPLAY in drm_type:
+            SubElement(req_drm_system_list, "cpix:DRMSystem", {"kid": key_map[track], "systemId": _wiseplay_system_id})
         if DrmType.NCG in drm_type:
             SubElement(req_drm_system_list, "cpix:DRMSystem", {"kid": key_map[track], "systemId": _ncg_system_id})
-        if DrmType.HLS_NCG in drm_type:
-            SubElement(req_drm_system_list, "cpix:DRMSystem", {"kid": key_map[track], "systemId": _hls_ncg_system_id})
+        if DrmType.NCGHLS_AES128 in drm_type:
+            SubElement(req_drm_system_list, "cpix:DRMSystem", {"kid": key_map[track], "systemId": _ncghls_aes128_system_id})
+        if DrmType.NCGHLS_SAMPLEAES in drm_type:
+            SubElement(req_drm_system_list, "cpix:DRMSystem", {"kid": key_map[track], "systemId": _ncghls_sampleaes_system_id})
+        if DrmType.AES128 in drm_type:
+            SubElement(req_drm_system_list, "cpix:DRMSystem", {"kid": key_map[track], "systemId": _aes128_system_id})
+        if DrmType.SAMPLEAES in drm_type:
+            SubElement(req_drm_system_list, "cpix:DRMSystem", {"kid": key_map[track], "systemId": _sampleaes_system_id})
 
     return tostring(req_root, encoding='utf8', method="xml")
 
@@ -81,6 +95,16 @@ def is_valid_response(response_data):
         result = True
 
     return result
+
+
+def get_element_text_safely(element, xpath, namespaces):
+    element_found = element.find(xpath, namespaces)
+    return base64.b64decode(element_found.text).decode('utf-8') if element_found is not None else ''
+
+
+def get_element_text_without_decode(element, xpath, namespaces):
+    element_found = element.find(xpath, namespaces)
+    return element_found.text if element_found is not None else ''
 
 
 def parse_response(response_data):
@@ -109,32 +133,51 @@ def parse_response(response_data):
     for res_content_key in res_root.findall(".//cpix:ContentKey", namespaces):
         for multidrm_info in multidrm_infos:
             if multidrm_info.key_id == res_content_key.get("kid"):
-                multidrm_info.iv = res_content_key.get("explicitIV")
-                multidrm_info.key = res_content_key.find(".//pskc:PlainValue", namespaces).text
+                multidrm_info.iv = res_content_key.get("explicitIV", "")
+                multidrm_info.key = get_element_text_without_decode(res_content_key, ".//pskc:PlainValue", namespaces)
 
     for res_drm_system in res_root.findall(".//cpix:DRMSystem", namespaces):
         for multidrm_info in multidrm_infos:
             if multidrm_info.key_id == res_drm_system.get("kid"):
                 system_id = res_drm_system.get("systemId")
                 if system_id == _widevine_system_id:
-                    multidrm_info.widevine_pssh = res_drm_system.find("cpix:PSSH", namespaces).text
-                    multidrm_info.widevine_pssh_payload \
-                        = res_drm_system.find("cpix:ContentProtectionData", namespaces).text
+                    multidrm_info.widevine_pssh = get_element_text_without_decode(res_drm_system, "cpix:PSSH", namespaces)
+                    multidrm_info.widevine_pssh_payload = get_element_text_without_decode(res_drm_system, "cpix:ContentProtectionData", namespaces)
+                    multidrm_info.widevine_hls_signaling_data_master = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='master']", namespaces)
+                    multidrm_info.widevine_hls_signaling_data_media = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='media']", namespaces)
                 elif system_id == _playready_system_id:
-                    multidrm_info.playready_pssh = res_drm_system.find("cpix:PSSH", namespaces).text
-                    multidrm_info.playready_pssh_payload \
-                        = res_drm_system.find("cpix:ContentProtectionData", namespaces).text
+                    multidrm_info.playready_pssh = get_element_text_without_decode(res_drm_system, "cpix:PSSH", namespaces)
+                    multidrm_info.playready_pssh_payload = get_element_text_without_decode(res_drm_system, "cpix:ContentProtectionData", namespaces)
+                    multidrm_info.playready_smoothstreaming_data = get_element_text_without_decode(res_drm_system, "cpix:SmoothStreamingProtectionHeaderData", namespaces)
+                    multidrm_info.playready_hls_signaling_data_master = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='master']", namespaces)
+                    multidrm_info.playready_hls_signaling_data_media = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='media']", namespaces)
                 elif system_id == _fairplay_system_id:
-                    multidrm_info.fairplay_hls_key_uri \
-                        = base64.b64decode(res_drm_system.find("cpix:URIExtXKey", namespaces).text).decode('utf-8')
-                    multidrm_info.fairplay_hls_signaling_data \
-                        = base64.b64decode(res_drm_system.find("cpix:HLSSignalingData", namespaces).text).decode(
-                        'utf-8')
+                    multidrm_info.fairplay_hls_key_uri = get_element_text_safely(res_drm_system, "cpix:URIExtXKey", namespaces)
+                    multidrm_info.fairplay_hls_signaling_data_master = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='master']", namespaces)
+                    multidrm_info.fairplay_hls_signaling_data_media = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='media']", namespaces)
+                elif system_id == _wiseplay_system_id:
+                    multidrm_info.wiseplay_pssh = get_element_text_without_decode(res_drm_system, "cpix:PSSH", namespaces)
+                    multidrm_info.wiseplay_pssh_payload = get_element_text_without_decode(res_drm_system, "cpix:ContentProtectionData", namespaces)
+                    multidrm_info.wiseplay_hls_signaling_data_master = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='master']", namespaces)
+                    multidrm_info.wiseplay_hls_signaling_data_media = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='media']", namespaces)
                 elif system_id == _ncg_system_id:
-                    multidrm_info.ncg_cek = res_drm_system.find("cpix:URIExtXKey", namespaces).text
-                elif system_id == _hls_ncg_system_id:
-                    multidrm_info.ncg_hls_key_uri \
-                        = base64.b64decode(res_drm_system.find("cpix:URIExtXKey", namespaces).text).decode('utf-8')
+                    multidrm_info.ncg_cek = get_element_text_without_decode(res_drm_system, "cpix:URIExtXKey", namespaces)
+                elif system_id == _ncghls_aes128_system_id:
+                    multidrm_info.ncghls_aes128_key_uri = get_element_text_safely(res_drm_system, "cpix:URIExtXKey", namespaces)
+                    multidrm_info.ncghls_aes128_hls_signaling_data_master = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='master']", namespaces)
+                    multidrm_info.ncghls_aes128_hls_signaling_data_media = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='media']", namespaces)
+                elif system_id == _ncghls_sampleaes_system_id:
+                    multidrm_info.ncghls_sampleaes_key_uri = get_element_text_safely(res_drm_system, "cpix:URIExtXKey", namespaces)
+                    multidrm_info.ncghls_sampleaes_hls_signaling_data_master = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='master']", namespaces)
+                    multidrm_info.ncghls_sampleaes_hls_signaling_data_media = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='media']", namespaces)
+                elif system_id == _aes128_system_id:
+                    multidrm_info.aes128_key_uri = get_element_text_safely(res_drm_system, "cpix:URIExtXKey", namespaces)
+                    multidrm_info.aes128_hls_signaling_data_master = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='master']", namespaces)
+                    multidrm_info.aes128_hls_signaling_data_media = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='media']", namespaces)
+                elif system_id == _sampleaes_system_id:
+                    multidrm_info.sampleaes_key_uri = get_element_text_safely(res_drm_system, "cpix:URIExtXKey", namespaces)
+                    multidrm_info.sampleaes_hls_signaling_data_master = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='master']", namespaces)
+                    multidrm_info.sampleaes_hls_signaling_data_media = get_element_text_safely(res_drm_system, "cpix:HLSSignalingData[@playlist='media']", namespaces)
 
     pack_info = ContentPackagingInfo(res_root.get("id"))
     pack_info.multidrm_infos = multidrm_infos
@@ -147,7 +190,7 @@ class CpixClient:
         self._kms_url = kms_url
 
     def get_content_key_info_from_pallycon_kms(self, content_id, drm_type
-                                               , encryption_scheme=EncryptionScheme.CENC
+                                               , encryption_scheme=EncryptionScheme.NONE
                                                , track_type=TrackType.ALL_TRACKS
                                                , period_index=0):
         # Set PallyCon KMS server URL

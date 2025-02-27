@@ -34,6 +34,7 @@ You can set the parameters of the function based on the packaging scenario you r
 ContentPackagingInfo GetContentKeyInfosFromPallyConKMS(String^ cid, DrmType drmType, EncryptionScheme encryptionScheme, TrackType trackType, long periodIndex);
 
 public enum class EncryptionScheme {
+    NONE,
     CENC,
     CBC1,
     CENS,
@@ -44,8 +45,12 @@ public enum class DrmType {
     WIDEVINE = (1 << 0),
     PLAYREADY = (1 << 1),
     FAIRPLAY = (1 << 2),
-    NCG = (1 << 3),
-    HLS_NCG = (1 << 4),
+    WISEPLAY = (1 << 3),
+    NCG = (1 << 4),
+    NCGHLS_AES128 = (1 << 5),
+    NCGHLS_SAMPLEAES = (1 << 6),
+    AES128 = (1 << 7),
+    SAMPLEAES = (1 << 8)
 };
 
 public enum class TrackType {
@@ -64,7 +69,7 @@ If you want to enable key rotation, you can set `key-rotation=true` to the Get p
 
 
 
-> NOTE : NCG and HLS_NCG types are only support single-key.
+> NOTE : NCG and clear-key types are supported for single-key only.
 
 
 

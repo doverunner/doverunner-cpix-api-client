@@ -21,7 +21,7 @@ namespace PallyCon
 
                 return System.Convert.ToBase64String(bytes);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw;
             }
@@ -38,16 +38,16 @@ namespace PallyCon
                 throw;
             }
         }
-        static string MakeJsonStringFromData(ContentPackagingInfo packInfo) 
+        static string MakeJsonStringFromData(ContentPackagingInfo packInfo)
         {
             string contentId = packInfo.ContentId;
             List<Dictionary<string, object>> listDrmInfos = new List<Dictionary<string, object>>();
 
-            foreach(var drmInfo in packInfo.DrmInfos)
+            foreach (var drmInfo in packInfo.DrmInfos)
             {
                 var dictDrmInfo = new Dictionary<string, object>();
-                
-                if(packInfo.DrmInfos.Count > 1)
+
+                if (packInfo.DrmInfos.Count > 1)
                     dictDrmInfo["track_type"] = drmInfo.TrackType;
 
                 dictDrmInfo["key_id_hex"] = drmInfo.KeyId;
@@ -57,7 +57,7 @@ namespace PallyCon
                 dictDrmInfo["iv_hex"] = Base64ToHex(drmInfo.Iv);
                 dictDrmInfo["iv_b64"] = drmInfo.Iv;
                 dictDrmInfo["widevine"] = new Dictionary<string, string> { ["pssh"] = drmInfo.WidevinePSSH, ["pssh_payload_only"] = drmInfo.WidevinePSSHpayload };
-                dictDrmInfo["playready"] = new Dictionary<string, string> { ["pssh"] = drmInfo.PlayReadyPSSH, ["pssh_payload_only"] = drmInfo.PlayReadyPSSHpayload };
+                dictDrmInfo["playready"] = new Dictionary<string, string> { ["pssh"] = drmInfo.PlayreadyPSSH, ["pssh_payload_only"] = drmInfo.PlayreadyPSSHpayload };
                 dictDrmInfo["fairplay"] = new Dictionary<string, string> { ["key_uri"] = drmInfo.FairplayHlsKeyUri };
 
                 listDrmInfos.Add(dictDrmInfo);
@@ -80,8 +80,8 @@ namespace PallyCon
             {
                 CpixClientWrapper pallyconCpixClientWrapper = new CpixClientWrapper(kmsUrl);
                 ContentPackagingInfo contentPackagingInfo = pallyconCpixClientWrapper.GetContentKeyInfoFromPallyConKMS(
-                    contentId, DrmType.WIDEVINE| DrmType.PLAYREADY|DrmType.FAIRPLAY, EncryptionScheme.CENC, TrackType.ALL_TRACKS, 0);
-                
+                    contentId, DrmType.WIDEVINE | DrmType.PLAYREADY | DrmType.FAIRPLAY, EncryptionScheme.NONE, TrackType.ALL_TRACKS, 0);
+
                 string jsonString = MakeJsonStringFromData(contentPackagingInfo);
                 Console.WriteLine(jsonString);
 

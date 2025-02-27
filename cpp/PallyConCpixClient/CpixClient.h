@@ -8,6 +8,7 @@
 namespace pallycon
 {
 	enum EncryptionScheme {
+		NONE,
 		CENC,
 		CBC1,
 		CENS,
@@ -15,12 +16,15 @@ namespace pallycon
 	};
 
 	enum DrmType {
-		NONE,
-		WIDEVINE = (1 << 0),	// 0000 0001 // 0x01
-		PLAYREADY = (1 << 1),	// 0000 0010 // 0x02
-		FAIRPLAY = (1 << 2),	// 0000 0100 // 0x04
-		NCG = (1 << 3),			// 0000 1000 // 0x08
-		HLS_NCG = (1 << 4),		// 0001 0000 // 0x10
+		WIDEVINE = (1 << 0),
+		PLAYREADY = (1 << 1),
+		FAIRPLAY = (1 << 2),
+		WISEPLAY = (1 << 3),
+		NCG = (1 << 4),
+		NCGHLS_AES128 = (1 << 5),
+		NCGHLS_SAMPLEAES = (1 << 6),
+		AES128 = (1 << 7),
+		SAMPLEAES = (1 << 8)
 	};
 
 	enum TrackType {
@@ -101,12 +105,33 @@ namespace pallycon
 		std::string periodIndex;
 		std::string widevinePSSH;
 		std::string widevinePSSHpayload;
+		std::string widevineHlsSignalingDataMaster;
+		std::string widevineHlsSignalingDataMedia;
 		std::string playreadyPSSH;
 		std::string playreadyPSSHpayload;
-		std::string fairplayHlsSignalingData;
+		std::string playreadySmoothStreamingData;
+		std::string playreadyHlsSignalingDataMaster;
+		std::string playreadyHlsSignalingDataMedia;
 		std::string fairplayHlsKeyUri;
+		std::string fairplayHlsSignalingDataMaster;
+		std::string fairplayHlsSignalingDataMedia;
+		std::string wiseplayPSSH;
+		std::string wiseplayPSSHpayload;
+		std::string wiseplayHlsSignalingDataMaster;
+		std::string wiseplayHlsSignalingDataMedia;
 		std::string ncgCek;
-		std::string ncgHlsKeyUri;
+		std::string ncghlsAes128KeyUri;
+		std::string ncghlsAes128HlsSignalingDataMaster;
+		std::string ncghlsAes128HlsSignalingDataMedia;
+		std::string ncghlsSampleAesKeyUri;
+		std::string ncghlsSampleAesHlsSignalingDataMaster;
+		std::string ncghlsSampleAesHlsSignalingDataMedia;
+		std::string aes128KeyUri;
+		std::string aes128HlsSignalingDataMaster;
+		std::string aes128HlsSignalingDataMedia;
+		std::string sampleAesKeyUri;
+		std::string sampleAesHlsSignalingDataMaster;
+		std::string sampleAesHlsSignalingDataMedia;
 	};
 
 	struct ContentPackagingInfo
@@ -171,7 +196,7 @@ namespace pallycon
 		* @param periodIndex			Period index for key rotation. 
 										Setting a value greater than 0 enables key rotation.
 		*/
-		ContentPackagingInfo GetContentKeyInfoFromPallyConKMS(const std::string contentId, DrmType drmType, EncryptionScheme encryptionScheme = CENC, TrackType trackType = ALL_TRACKS, long periodIndex = 0);
+		ContentPackagingInfo GetContentKeyInfoFromPallyConKMS(const std::string contentId, DrmType drmType, EncryptionScheme encryptionScheme = NONE, TrackType trackType = ALL_TRACKS, long periodIndex = 0);
 	};
 }
 

@@ -53,36 +53,41 @@ If you want to enable key rotation, you can set `key-rotation=true` to the Get p
 
 ```python
 class DrmType(Flag):
-    WIDEVINE = auto()
-    PLAYREADY = auto()
-    FAIRPLAY = auto()
-    NCG = auto()
-    HLS_NCG = auto()
+  WIDEVINE = auto()
+  PLAYREADY = auto()
+  FAIRPLAY = auto()
+  WISEPLAY = auto()
+  NCG = auto()
+  NCGHLS_AES128 = auto()
+  NCGHLS_SAMPLEAES = auto()
+  AES128 = auto()
+  SAMPLEAES = auto()
 ```
 
 ```python
 class EncryptionScheme(Flag):
-    CENC = auto()
-    CBC1 = auto()
-    CENS = auto()
-    CBCS = auto()
+  NONE = auto()
+  CENC = auto()
+  CBC1 = auto()
+  CENS = auto()
+  CBCS = auto()
 ```
 
 ```python
 class TrackType(Flag):
-    ALL_TRACKS = auto()
-    AUDIO = auto()
-    SD = auto()
-    HD = auto()
-    UHD1 = auto()
-    UHD2 = auto()
+  ALL_TRACKS = auto()
+  AUDIO = auto()
+  SD = auto()
+  HD = auto()
+  UHD1 = auto()
+  UHD2 = auto()
 ```
 
 You can set multiple values using the OR(`|`) operator, such as `WIDEVINE|PLAYREADY` or `SD|HD|AUDIO` for **DrmType** and **TrackType**.
 
 
 
-> NOTE : NCG and HLS_NCG types are only support single-key.
+> NOTE : NCG and clear-key types are supported for single-key only.
 
 
 
